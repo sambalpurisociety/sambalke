@@ -78,7 +78,53 @@ function doPost(e) {
       payload = e.parameter;
     }
 
-    // Validation
+    // Check for Admin-Authenticated Actions
+    if (payload.action && payload.action.toString().startsWith("admin")) {
+      const settings = getFullSettings();
+      const expectedPassword = (settings.ADMIN_PASSWORD || "sambalke@2026").toString().trim();
+      const enteredPassword = (payload.adminPassword || "").toString().trim();
+
+      if (!enteredPassword || enteredPassword !== expectedPassword) {
+        return createJsonResponse({
+          status: "error",
+          code: 401,
+          message: "Unauthorized: Invalid admin password."
+        });
+      }
+
+      if (payload.action === "adminVerify") {
+        return createJsonResponse({
+          status: "success",
+          message: "Admin authentication successful."
+        });
+      }
+
+      if (payload.action === "adminAddProduct") {
+        const prod = payload.product || {};
+        const ss = SpreadsheetApp.getActiveSpreadsheet();
+        let prodSheet = ss.getSheetByName(SHEET_PRODUCTS);
+        if (!prodSheet) {
+          return createJsonResponse({ status: "error", message: "Products sheet not found." });
+        }
+        prodSheet.appendRow([
+          prod.id || `SK-PRD-${Date.now()}`,
+          prod.category || "Crescent Hobo",
+          prod.title || "Untitled Product",
+          prod.description || "",
+          prod.fabric || "Sambalpuri Handloom Cotton",
+          prod.dimensions || "13.5 x 13.5 x 2.5 in",
+          parseFloat(prod.price) || 0,
+          prod.imageUrl || "",
+          prod.inStock !== false ? "TRUE" : "FALSE"
+        ]);
+        return createJsonResponse({
+          status: "success",
+          message: "Product catalog updated successfully by admin."
+        });
+      }
+    }
+
+    // Validation (Customer Order Inquiries)
     const customerName = (payload.customerName || payload.name || "Valued Customer").toString().trim();
     const rawMobile = (payload.mobileNumber || payload.phone || "").toString().trim();
     const productId = (payload.productId || "SK-BAG-GEN").toString().trim();

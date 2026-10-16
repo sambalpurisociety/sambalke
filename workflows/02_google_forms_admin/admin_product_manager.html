@@ -3,30 +3,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SambalKe Admin - Product Catalog Manager</title>
+  <title>SambalKe Admin - Password Protected Product Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-serif-title { font-family: 'Playfair Display', serif; }
   </style>
 </head>
 <body class="bg-stone-50 text-stone-900 min-h-screen p-4 md:p-8">
-  <div class="max-w-6xl mx-auto space-y-6">
+
+  <!-- ====================================================================
+       1. AUTHENTICATION LOCK SCREEN (MODAL GATE)
+       ==================================================================== -->
+  <div id="auth-gate" class="fixed inset-0 z-50 bg-stone-950/90 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl border border-stone-200 text-center space-y-5 animate-in fade-in zoom-in duration-200">
+      
+      <div class="w-16 h-16 bg-amber-100 text-amber-900 rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-inner border border-amber-200">
+        🔒
+      </div>
+
+      <div>
+        <span class="text-[10px] font-bold text-amber-900 uppercase tracking-widest bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+          SambalKe Security Gate
+        </span>
+        <h2 class="text-xl font-extrabold text-stone-900 mt-2 font-serif-title">Admin Catalog Portal</h2>
+        <p class="text-xs text-stone-500 mt-1">This dashboard is password-protected. Enter your admin password to manage products, pricing, and stock.</p>
+      </div>
+
+      <form onsubmit="handleAdminLogin(event)" class="space-y-3.5">
+        <div class="relative">
+          <input type="password" id="auth-password-input" required placeholder="Enter Admin Password" class="w-full px-4 py-2.5 text-xs text-center tracking-widest rounded-xl bg-stone-50 border border-stone-300 text-stone-900 focus:ring-2 focus:ring-amber-800 outline-none font-mono">
+          <button type="button" onclick="togglePasswordVisibility('auth-password-input')" class="absolute right-3 top-2.5 text-xs text-stone-400 hover:text-stone-700">👁️</button>
+        </div>
+
+        <p id="auth-error-msg" class="text-xs text-rose-600 font-bold hidden">
+          ✕ Incorrect password. Default is: <code class="bg-rose-50 px-1 rounded">sambalke@2026</code>
+        </p>
+
+        <button type="submit" class="w-full py-2.5 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-2">
+          <span>🔓</span> Unlock Admin Dashboard
+        </button>
+      </form>
+
+      <div class="text-[11px] text-stone-400 border-t border-stone-100 pt-3">
+        Default initial password: <code class="font-mono text-stone-700 font-bold">sambalke@2026</code><br/>
+        (You can change this password once inside)
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       2. MAIN PROTECTED ADMIN DASHBOARD
+       ==================================================================== -->
+  <div id="admin-main-content" class="hidden max-w-6xl mx-auto space-y-6">
 
     <!-- Header -->
     <header class="bg-white border border-stone-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 mb-2">
-          <span>🔒</span> Admin Product Control Center
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 mb-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+          Authenticated Admin Session
         </div>
         <h1 class="text-2xl font-extrabold text-stone-900 tracking-tight">SambalKe Handlooms Inventory</h1>
-        <p class="text-xs text-stone-500 mt-1">Add, update, and manage Sambalpuri bags and handloom products for your Google Site storefront.</p>
+        <p class="text-xs text-stone-500 mt-1">Manage The Crescent Hobo collection and other Sambalpuri handloom products.</p>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex flex-wrap items-center gap-2">
         <button onclick="toggleAddModal(true)" class="px-4 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1.5">
           <span>➕</span> Add New Product
+        </button>
+        <button onclick="openChangePasswordModal()" class="px-3 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl text-xs font-semibold transition border border-stone-200 flex items-center gap-1">
+          <span>🔑</span> Change Password
+        </button>
+        <button onclick="handleAdminLogout()" class="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl text-xs font-bold transition border border-rose-200 flex items-center gap-1">
+          <span>🔒</span> Lock & Logout
         </button>
       </div>
     </header>
@@ -37,7 +90,7 @@
         <span class="text-base">⚙️</span>
         <div>
           <span class="font-bold">Google Apps Script Web App URL:</span>
-          <span class="text-stone-500 block md:inline md:ml-1">Paste your deployed Web App URL to sync with Google Sheets live</span>
+          <span class="text-stone-500 block md:inline md:ml-1">Syncs live with Google Sheet 'Products' tab</span>
         </div>
       </div>
       <div class="w-full md:w-auto flex items-center gap-2">
@@ -50,15 +103,15 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <div class="bg-white border border-stone-200 p-4 rounded-xl shadow-sm">
         <span class="text-xs text-stone-500 font-medium">Total Products</span>
-        <div id="stat-total" class="text-2xl font-black text-stone-900 mt-1">5</div>
+        <div id="stat-total" class="text-2xl font-black text-stone-900 mt-1">23</div>
       </div>
       <div class="bg-white border border-stone-200 p-4 rounded-xl shadow-sm">
-        <span class="text-xs text-stone-500 font-medium">Sambalpuri Bags</span>
-        <div id="stat-bags" class="text-2xl font-black text-amber-800 mt-1">4</div>
+        <span class="text-xs text-stone-500 font-medium">Crescent Hobo Weaves</span>
+        <div id="stat-bags" class="text-2xl font-black text-amber-800 mt-1">14</div>
       </div>
       <div class="bg-white border border-stone-200 p-4 rounded-xl shadow-sm">
         <span class="text-xs text-stone-500 font-medium">In Stock</span>
-        <div id="stat-instock" class="text-2xl font-black text-emerald-600 mt-1">5</div>
+        <div id="stat-instock" class="text-2xl font-black text-emerald-600 mt-1">23</div>
       </div>
       <div class="bg-white border border-stone-200 p-4 rounded-xl shadow-sm">
         <span class="text-xs text-stone-500 font-medium">Store Currency</span>
@@ -73,10 +126,9 @@
           <label class="text-xs font-bold text-stone-600">Category Filter:</label>
           <select id="filter-category" onchange="renderProductsTable()" class="px-2.5 py-1 text-xs border border-stone-200 rounded-lg bg-stone-50 font-medium">
             <option value="ALL">All Categories</option>
-            <option value="Bags">Bags</option>
+            <option value="Crescent Hobo">Crescent Hobo Collection</option>
+            <option value="Other Bags">In Other Bags</option>
             <option value="Sarees">Sarees</option>
-            <option value="Kurtas">Kurtas & Apparel</option>
-            <option value="Home Decor">Home Decor</option>
           </select>
         </div>
         <button onclick="exportProductsCSV()" class="text-xs font-semibold text-stone-600 hover:text-stone-900 flex items-center gap-1 border border-stone-200 px-3 py-1.5 rounded-lg">
@@ -91,7 +143,7 @@
               <th class="py-3 px-4">Image</th>
               <th class="py-3 px-4">Product Code & Name</th>
               <th class="py-3 px-4">Category</th>
-              <th class="py-3 px-4">Sizes</th>
+              <th class="py-3 px-4">Dimensions</th>
               <th class="py-3 px-4">Price (₹)</th>
               <th class="py-3 px-4">Stock Status</th>
               <th class="py-3 px-4 text-right">Actions</th>
@@ -104,158 +156,194 @@
       </div>
     </div>
 
-    <!-- MODAL: ADD / EDIT PRODUCT -->
-    <div id="product-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl border border-stone-200 max-h-[90vh] overflow-y-auto space-y-4">
-        <div class="flex justify-between items-center border-b border-stone-100 pb-3">
-          <h3 id="modal-title" class="text-base font-bold text-stone-900">Add New Sambalpuri Product</h3>
-          <button onclick="toggleAddModal(false)" class="text-stone-400 hover:text-stone-600 font-bold text-lg">&times;</button>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: ADD / EDIT PRODUCT
+       ==================================================================== -->
+  <div id="product-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl border border-stone-200 max-h-[90vh] overflow-y-auto space-y-4">
+      <div class="flex justify-between items-center border-b border-stone-100 pb-3">
+        <h3 id="modal-title" class="text-base font-bold text-stone-900">Add New Sambalpuri Product</h3>
+        <button onclick="toggleAddModal(false)" class="text-stone-400 hover:text-stone-600 font-bold text-lg">&times;</button>
+      </div>
+
+      <form id="product-form" onsubmit="handleSaveProduct(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Product Title *</label>
+          <input type="text" id="prod-title" required placeholder="e.g. Sambalpuri Crescent Hobo" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
         </div>
 
-        <form id="product-form" onsubmit="handleSaveProduct(event)" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">Product Title *</label>
-            <input type="text" id="prod-title" required placeholder="e.g. Sambalpuri Double Ikat Classic Tote Bag" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+            <label class="block text-xs font-bold text-stone-700 mb-1">Category *</label>
+            <select id="prod-category" required class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+              <option value="Crescent Hobo">Crescent Hobo Collection</option>
+              <option value="Other Bags">In Other Bags</option>
+              <option value="Sarees">Sarees</option>
+              <option value="Kurtas">Kurtas & Apparel</option>
+              <option value="Home Decor">Home Decor</option>
+            </select>
           </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-stone-700 mb-1">Category *</label>
-              <select id="prod-category" required class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
-                <option value="Bags">Bags (Sambalpuri Handbags)</option>
-                <option value="Sarees">Sarees</option>
-                <option value="Kurtas">Kurtas & Apparel</option>
-                <option value="Dupattas">Dupattas & Shawls</option>
-                <option value="Home Decor">Home Decor</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-stone-700 mb-1">Price in Rupees (₹) *</label>
-              <input type="number" id="prod-price" required min="1" step="1" placeholder="e.g. 1499" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-stone-700 mb-1">Fabric / Weave Type</label>
-              <input type="text" id="prod-fabric" placeholder="e.g. 100% Handloom Cotton Bandha" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-stone-700 mb-1">Available Sizes (comma-separated)</label>
-              <input type="text" id="prod-sizes" placeholder="e.g. Standard, Large" value="Standard, Large" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
-            </div>
-          </div>
-
           <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">Photo URL *</label>
-            <input type="url" id="prod-img" required placeholder="https://..." class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
-            <p class="text-[10px] text-stone-400 mt-0.5">Use high-resolution image URL or Google Drive direct link.</p>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Price in Rupees (₹) *</label>
+            <input type="number" id="prod-price" required min="1" step="1" placeholder="e.g. 1699" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
           </div>
+        </div>
 
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">Description</label>
-            <textarea id="prod-desc" rows="3" placeholder="Handcrafted with authentic Odisha geometric bandha weave..." class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none"></textarea>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Fabric / Weave Type</label>
+            <input type="text" id="prod-fabric" placeholder="e.g. Sambalpuri Cotton Bandha" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
           </div>
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Dimensions</label>
+            <input type="text" id="prod-sizes" placeholder="13.5 x 13.5 x 2.5 in" value="13.5 x 13.5 x 2.5 in (Belt: 21.5 in)" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+          </div>
+        </div>
 
-          <div class="flex items-center gap-4 pt-1">
-            <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-stone-700">
-              <input type="checkbox" id="prod-instock" checked class="rounded text-amber-800 focus:ring-amber-700"> In Stock
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-stone-700">
-              <input type="checkbox" id="prod-featured" checked class="rounded text-amber-800 focus:ring-amber-700"> Featured on Home
-            </label>
-          </div>
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Photo URL *</label>
+          <input type="url" id="prod-img" required placeholder="https://..." class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+        </div>
 
-          <div class="pt-3 border-t border-stone-100 flex justify-end gap-2">
-            <button type="button" onclick="toggleAddModal(false)" class="px-4 py-2 border border-stone-200 rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-50">Cancel</button>
-            <button type="submit" class="px-5 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold shadow-sm">Save Product</button>
-          </div>
-        </form>
-      </div>
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Description</label>
+          <textarea id="prod-desc" rows="3" placeholder="Handcrafted with authentic Odisha geometric bandha weave..." class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none"></textarea>
+        </div>
+
+        <div class="flex items-center gap-4 pt-1">
+          <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-stone-700">
+            <input type="checkbox" id="prod-instock" checked class="rounded text-amber-800 focus:ring-amber-700"> In Stock
+          </label>
+        </div>
+
+        <div class="pt-3 border-t border-stone-100 flex justify-end gap-2">
+          <button type="button" onclick="toggleAddModal(false)" class="px-4 py-2 border border-stone-200 rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-50">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold shadow-sm">Save Product</button>
+        </div>
+      </form>
     </div>
+  </div>
 
+  <!-- ====================================================================
+       MODAL: CHANGE PASSWORD
+       ==================================================================== -->
+  <div id="change-pwd-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl border border-stone-200 space-y-4">
+      <div class="flex justify-between items-center border-b border-stone-100 pb-2">
+        <h3 class="text-sm font-bold text-stone-900">Change Admin Password</h3>
+        <button onclick="closeChangePasswordModal()" class="text-stone-400 hover:text-stone-700 font-bold">&times;</button>
+      </div>
+
+      <form onsubmit="handleUpdatePassword(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Current Password</label>
+          <input type="password" id="curr-pwd" required class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">New Password (Min 6 chars)</label>
+          <input type="password" id="new-pwd" required minlength="6" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeChangePasswordModal()" class="px-3 py-1.5 border border-stone-200 rounded-xl text-xs text-stone-600">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 bg-amber-800 text-white rounded-xl text-xs font-bold">Update Password</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script>
-    // Initial Catalog Data
-    let catalog = [
-      {
-        id: 'SK-BAG-001',
-        category: 'Bags',
-        title: 'Sambalpuri Double Ikat Classic Tote Bag',
-        desc: 'Handcrafted from authentic Odisha cotton bandha weave with rich crimson maroon and geometric motifs.',
-        fabric: '100% Handloom Cotton',
-        sizes: 'Standard, Large',
-        price: 1499,
-        img: '../assets/sambalpuri_tote_bag.jpg',
-        inStock: true,
-        featured: true
-      },
-      {
-        id: 'SK-BAG-002',
-        category: 'Bags',
-        title: 'Sambalpuri Bandha Crossbody Sling Bag',
-        desc: 'Vibrant mustard yellow and indigo blue geometric Odisha handloom weave with adjustable strap.',
-        fabric: 'Handwoven Sambalpuri Ikat',
-        sizes: 'Small, Standard',
-        price: 999,
-        img: '../assets/sambalpuri_sling_bag.jpg',
-        inStock: true,
-        featured: true
-      },
-      {
-        id: 'SK-BAG-003',
-        category: 'Bags',
-        title: 'Handwoven Ikat Padded Laptop Sleeve & Bag',
-        desc: 'Shock-absorbent laptop bag with authentic Sambalpuri black and crimson handloom exterior.',
-        fabric: 'Sambalpuri Ikat Cotton',
-        sizes: '13-14 inch, 15-16 inch',
-        price: 1799,
-        img: '../assets/sambalpuri_laptop_bag.jpg',
-        inStock: true,
-        featured: true
-      },
-      {
-        id: 'SK-BAG-004',
-        category: 'Bags',
-        title: 'Sambalpuri Ethnic Weekend Travel Duffel',
-        desc: 'Spacious cylindrical duffel bag crafted with heavy-gauge Sambalpuri handloom fabric.',
-        fabric: 'Pure Cotton Handloom',
-        sizes: 'Large, XL Travel',
-        price: 2499,
-        img: 'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=400&q=80',
-        inStock: true,
-        featured: false
-      },
-      {
-        id: 'SK-SAR-001',
-        category: 'Sarees',
-        title: 'Traditional Pasapalli Sambalpuri Silk Saree',
-        desc: 'Heritage handloom saree with black & white chessboard body and contrasting red border.',
-        fabric: 'Pure Sambalpuri Silk',
-        sizes: 'Free Size (6.3m)',
-        price: 8499,
-        img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80',
-        inStock: true,
-        featured: false
+    const DEFAULT_ADMIN_PASSWORD = "sambalke@2026";
+
+    function getAdminPassword() {
+      return localStorage.getItem('sambalke_admin_password') || DEFAULT_ADMIN_PASSWORD;
+    }
+
+    function checkAuthStatus() {
+      const isAuth = sessionStorage.getItem('sambalke_admin_authenticated') === 'true';
+      if (isAuth) {
+        document.getElementById('auth-gate').classList.add('hidden');
+        document.getElementById('admin-main-content').classList.remove('hidden');
+      } else {
+        document.getElementById('auth-gate').classList.remove('hidden');
+        document.getElementById('admin-main-content').classList.add('hidden');
       }
+    }
+
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      const entered = document.getElementById('auth-password-input').value.trim();
+      const actual = getAdminPassword();
+
+      if (entered === actual) {
+        sessionStorage.setItem('sambalke_admin_authenticated', 'true');
+        document.getElementById('auth-error-msg').classList.add('hidden');
+        checkAuthStatus();
+        renderProductsTable();
+      } else {
+        document.getElementById('auth-error-msg').classList.remove('hidden');
+        document.getElementById('auth-password-input').value = "";
+        document.getElementById('auth-password-input').focus();
+      }
+    }
+
+    function handleAdminLogout() {
+      if (confirm("Lock admin panel and log out?")) {
+        sessionStorage.removeItem('sambalke_admin_authenticated');
+        document.getElementById('auth-password-input').value = "";
+        document.getElementById('auth-error-msg').classList.add('hidden');
+        checkAuthStatus();
+      }
+    }
+
+    function togglePasswordVisibility(id) {
+      const input = document.getElementById(id);
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    function openChangePasswordModal() {
+      document.getElementById('change-pwd-modal').classList.remove('hidden');
+    }
+
+    function closeChangePasswordModal() {
+      document.getElementById('change-pwd-modal').classList.add('hidden');
+    }
+
+    function handleUpdatePassword(e) {
+      e.preventDefault();
+      const curr = document.getElementById('curr-pwd').value.trim();
+      const newP = document.getElementById('new-pwd').value.trim();
+
+      if (curr !== getAdminPassword()) {
+        alert("Current password is incorrect.");
+        return;
+      }
+
+      localStorage.setItem('sambalke_admin_password', newP);
+      alert("Admin password updated successfully!");
+      closeChangePasswordModal();
+    }
+
+    // Official Catalog Data
+    let catalog = [
+      { id: 'SK-HBO-001', category: 'Crescent Hobo', title: 'Crimson Jaal Crescent Hobo', desc: 'Red and off-white geometric grid and jaal check ikat.', fabric: 'Pure Handloom Cotton Bandha', sizes: '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)', price: 1699, img: '../assets/crimson_jaal.png', inStock: true },
+      { id: 'SK-HBO-002', category: 'Crescent Hobo', title: 'Regal Bloom Crescent Hobo', desc: 'Deep magenta-pink traditional Sambalpuri floral bandha.', fabric: 'Handwoven Cotton Bandha', sizes: '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)', price: 1699, img: '../assets/regal_bloom.png', inStock: true },
+      { id: 'SK-HBO-003', category: 'Crescent Hobo', title: 'Floral Duet Crescent Hobo', desc: 'Rich indigo blue field accented with bright yellow flora.', fabric: 'Pure Handloom Cotton', sizes: '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)', price: 1699, img: '../assets/floral_duet.png', inStock: true },
+      { id: 'SK-HBO-004', category: 'Crescent Hobo', title: 'Konark Chakra Crescent Hobo', desc: 'Heritage Konark Sun Temple chariot wheel motifs.', fabric: 'Handwoven Odisha Bandha', sizes: '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)', price: 1899, img: '../assets/konark_chakra.png', inStock: true },
+      { id: 'SK-HBO-005', category: 'Crescent Hobo', title: 'Classic Passapalli Crescent Hobo', desc: 'Timeless Odisha chessboard check bandha in red and black.', fabric: 'Sambalpuri Passapalli Handloom', sizes: '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)', price: 1799, img: '../assets/classic_passapalli.png', inStock: true },
+      { id: 'SK-HBO-006', category: 'Crescent Hobo', title: 'Gramya Crescent Hobo', desc: 'Tribal dance and village life folk motifs.', fabric: 'Tribal Heritage Bandha', sizes: '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)', price: 1799, img: '../assets/gramya_crescent.png', inStock: true },
+      { id: 'SK-HBO-011', category: 'Crescent Hobo', title: 'Van Katha Crescent Hobo', desc: 'Forest folklore wildlife weave featuring elephants and tigers.', fabric: 'Sambalpuri Wildlife Ikat', sizes: '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)', price: 1899, img: '../assets/van_katha.png', inStock: true },
+      { id: 'SK-OTH-001', category: 'Other Bags', title: 'Sambalpuri Handloom Backpack', desc: 'Padded everyday daypack in peach ikat.', fabric: '100% Cotton Handloom', sizes: '15 x 12 x 5 in', price: 1899, img: '../assets/other_backpack.png', inStock: true },
+      { id: 'SK-OTH-002', category: 'Other Bags', title: 'Sambalpuri Mobile Pouch Sling', desc: 'Sleek vertical mobile pouch with magnetic lock.', fabric: 'Handloom Cotton Bandha', sizes: '7.5 x 4.5 x 1.5 in', price: 599, img: '../assets/other_mobile_pouch.png', inStock: true },
+      { id: 'SK-OTH-003', category: 'Other Bags', title: 'Traditional Festive Potlis', desc: 'Silk-velvet handcrafted potli bag with gold zari.', fabric: 'Silk-Velvet Blend', sizes: '9 x 8 in', price: 899, img: '../assets/other_potlis.png', inStock: true }
     ];
 
-    // Load from LocalStorage if present
-    const saved = localStorage.getItem('sambalke_admin_catalog');
-    if (saved) {
-      try { catalog = JSON.parse(saved); } catch (e) {}
-    }
-
-    const savedEndpoint = localStorage.getItem('sambalke_api_endpoint');
-    if (savedEndpoint) {
-      document.getElementById('api-endpoint-input').value = savedEndpoint;
-    }
-
-    function saveApiEndpoint() {
-      const val = document.getElementById('api-endpoint-input').value.trim();
-      localStorage.setItem('sambalke_api_endpoint', val);
-      alert('API Endpoint saved successfully!');
+    const savedCatalog = localStorage.getItem('sambalke_admin_catalog');
+    if (savedCatalog) {
+      try { catalog = JSON.parse(savedCatalog); } catch(e){}
     }
 
     function toggleAddModal(show) {
@@ -273,7 +361,7 @@
       tbody.innerHTML = filtered.map(p => `
         <tr class="hover:bg-stone-50/80 transition">
           <td class="py-3 px-4">
-            <img src="${p.img}" alt="${p.title}" class="w-12 h-12 object-cover rounded-lg border border-stone-200">
+            <img src="${p.img}" alt="${p.title}" class="w-12 h-12 object-contain rounded-lg border border-stone-200 bg-white p-1">
           </td>
           <td class="py-3 px-4">
             <span class="text-[10px] font-mono font-bold text-amber-900 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">${p.id}</span>
@@ -281,7 +369,7 @@
             <div class="text-[11px] text-stone-500 truncate max-w-xs">${p.fabric}</div>
           </td>
           <td class="py-3 px-4">
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${p.category === 'Bags' ? 'bg-amber-100 text-amber-900' : 'bg-purple-100 text-purple-900'}">${p.category}</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${p.category === 'Crescent Hobo' ? 'bg-amber-100 text-amber-900' : 'bg-purple-100 text-purple-900'}">${p.category}</span>
           </td>
           <td class="py-3 px-4 font-mono text-[11px] text-stone-600">${p.sizes}</td>
           <td class="py-3 px-4 font-black text-amber-900 text-sm">₹${p.price.toLocaleString('en-IN')}</td>
@@ -297,7 +385,7 @@
       `).join('');
 
       document.getElementById('stat-total').innerText = catalog.length;
-      document.getElementById('stat-bags').innerText = catalog.filter(p => p.category === 'Bags').length;
+      document.getElementById('stat-bags').innerText = catalog.filter(p => p.category === 'Crescent Hobo').length;
       document.getElementById('stat-instock').innerText = catalog.filter(p => p.inStock).length;
     }
 
@@ -324,28 +412,15 @@
       const category = document.getElementById('prod-category').value;
       const price = parseFloat(document.getElementById('prod-price').value) || 0;
       const fabric = document.getElementById('prod-fabric').value.trim() || 'Sambalpuri Handloom';
-      const sizes = document.getElementById('prod-sizes').value.trim() || 'Standard';
+      const sizes = document.getElementById('prod-sizes').value.trim() || '13.5 x 13.5 x 2.5 in';
       const img = document.getElementById('prod-img').value.trim();
       const desc = document.getElementById('prod-desc').value.trim();
       const inStock = document.getElementById('prod-instock').checked;
-      const featured = document.getElementById('prod-featured').checked;
 
-      const prefix = category === 'Bags' ? 'SK-BAG' : (category === 'Sarees' ? 'SK-SAR' : 'SK-PRD');
+      const prefix = category === 'Crescent Hobo' ? 'SK-HBO' : 'SK-OTH';
       const nextId = `${prefix}-${('000' + (catalog.length + 1)).slice(-3)}`;
 
-      const newProduct = {
-        id: nextId,
-        category,
-        title,
-        desc,
-        fabric,
-        sizes,
-        price,
-        img,
-        inStock,
-        featured
-      };
-
+      const newProduct = { id: nextId, category, title, desc, fabric, sizes, price, img, inStock };
       catalog.unshift(newProduct);
       saveCatalogLocally();
       toggleAddModal(false);
@@ -359,20 +434,10 @@
     }
 
     function exportProductsCSV() {
-      const headers = ["Product_ID", "Category", "Title", "Description", "Fabric_Type", "Sizes_Available", "Price_INR", "Image_URL", "In_Stock", "Featured"];
+      const headers = ["Product_ID", "Category", "Title", "Description", "Fabric_Type", "Dimensions", "Price_INR", "Image_URL", "In_Stock"];
       const rows = catalog.map(p => [
-        p.id,
-        p.category,
-        `"${p.title.replace(/"/g, '""')}"`,
-        `"${(p.desc||'').replace(/"/g, '""')}"`,
-        `"${p.fabric.replace(/"/g, '""')}"`,
-        `"${p.sizes}"`,
-        p.price,
-        `"${p.img}"`,
-        p.inStock ? "TRUE" : "FALSE",
-        p.featured ? "TRUE" : "FALSE"
+        p.id, p.category, `"${p.title.replace(/"/g, '""')}"`, `"${(p.desc||'').replace(/"/g, '""')}"`, `"${p.fabric.replace(/"/g, '""')}"`, `"${p.sizes}"`, p.price, `"${p.img}"`, p.inStock ? "TRUE" : "FALSE"
       ]);
-
       const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
@@ -383,7 +448,8 @@
       document.body.removeChild(link);
     }
 
-    renderProductsTable();
+    // Init
+    checkAuthStatus();
   </script>
 </body>
 </html>

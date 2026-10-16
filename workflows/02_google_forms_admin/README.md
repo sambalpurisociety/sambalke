@@ -12,6 +12,15 @@ You have two simple options provided in this workflow:
 
 ---
 
+## 🔐 Admin Password Security
+The Admin Portal (`admin_product_manager.html`) and the Internal Tabs (`Costing Calculator` & `Inquiries Log` in `index.html`) are protected by a master password gate:
+- **Default Password**: `sambalke@2026`
+- **Configurable in Google Sheet**: Defined in `Settings` tab under `ADMIN_PASSWORD`.
+- **Change Password**: You can change your password anytime directly from the Admin Portal using the **"🔑 Change Password"** modal.
+- **Session Locking**: Click **"🔒 Lock & Logout"** on any admin page to immediately terminate the admin session and re-lock sensitive financial and customer order data.
+
+---
+
 ## 📋 Google Form Setup (Step-by-Step)
 
 ### 1. Create a New Google Form

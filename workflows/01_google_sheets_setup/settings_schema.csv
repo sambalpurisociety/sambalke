@@ -8,3 +8,4 @@ CURRENCY_SYMBOL,₹,Currency symbol for price tags
 AUTO_REPLY_CUSTOMER,FALSE,Set to TRUE if you wish to send automatic receipt email to customer (if email is provided)
 DEFAULT_CATEGORY,Bags,Default category displayed on Google Site catalog
 CONTACT_PHONE,"+91 98765 43210",Customer support hotline displayed on Google Site
+ADMIN_PASSWORD,"sambalke@2026",Secret password required to access admin product management and internal costing

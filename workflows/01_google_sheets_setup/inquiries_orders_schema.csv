@@ -1,0 +1,3 @@
+Inquiry_ID,Timestamp,Customer_Name,Mobile_Number,Product_ID,Product_Title,Selected_Size,Quantity,Unit_Price_INR,Estimated_Total_INR,Delivery_Address_Pincode,Customer_Notes,Order_Status,Notification_Emails_Dispatched,Notes_Internal
+INQ-261016-1001,2026-10-16 14:30:15,Rohan Mohanty,+91 98610 12345,SK-BAG-001,Sambalpuri Double Ikat Classic Tote Bag,Large,1,1499,1499,"Bhubaneswar, Odisha - 751024","Please confirm delivery within 3 days.",Confirmed,owner@sambalke.com,Customer confirmed via WhatsApp call
+INQ-261016-1002,2026-10-16 16:45:00,Pooja Verma,+91 94370 98765,SK-BAG-002,Sambalpuri Bandha Crossbody Sling Bag,Standard,2,999,1998,"Koramangala, Bengaluru - 560034","Gift wrap if possible.",New,owner@sambalke.com;sales@sambalke.com,Awaiting stock dispatch

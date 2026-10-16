@@ -1,0 +1,9 @@
+Setting_Key,Setting_Value,Description
+NOTIFICATION_EMAIL_LIST,"owner@sambalke.com, orders@sambalke.com",Comma-separated list of recipient emails for instant new customer query alerts
+BRAND_NAME,"SambalKe Handlooms",Store and brand name displayed on website and in emails
+WHATSAPP_SUPPORT_NUMBER,"+919876543210",Business WhatsApp number without spaces or plus symbol for direct chat links
+CURRENCY_CODE,INR,Currency code
+CURRENCY_SYMBOL,₹,Currency symbol for price tags
+AUTO_REPLY_CUSTOMER,FALSE,Set to TRUE if you wish to send automatic receipt email to customer (if email is provided)
+DEFAULT_CATEGORY,Bags,Default category displayed on Google Site catalog
+CONTACT_PHONE,"+91 98765 43210",Customer support hotline displayed on Google Site

@@ -1,0 +1,24 @@
+Product_ID,Category,Collection,Title,Weave_Type,Dimensions,Sizes_Available,Price_INR,Image_URL,In_Stock,Featured
+SK-HBO-001,Crescent Hobo,Crescent Hobo Collection,Crimson Jaal,Sambalpuri Double Ikat Jaal,"13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",Standard (One Size),1699,workflows/assets/crimson_jaal.png,TRUE,TRUE
+SK-HBO-002,Crescent Hobo,Crescent Hobo Collection,Regal Bloom,Magenta Floral Bandha Ikat,"13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",Standard (One Size),1699,workflows/assets/regal_bloom.png,TRUE,TRUE
+SK-HBO-003,Crescent Hobo,Crescent Hobo Collection,Floral Duet,Indigo Blue with Marigold Flora,"13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",Standard (One Size),1699,workflows/assets/floral_duet.png,TRUE,TRUE
+SK-HBO-004,Crescent Hobo,Crescent Hobo Collection,Konark Chakra,Sun Temple Heritage Bandha,"13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",Standard (One Size),1899,workflows/assets/konark_chakra.png,TRUE,TRUE
+SK-HBO-005,Crescent Hobo,Crescent Hobo Collection,Classic Passapalli,Odisha Chessboard Bandha,"13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",Standard (One Size),1799,workflows/assets/classic_passapalli.png,TRUE,TRUE
+SK-HBO-006,Crescent Hobo,Crescent Hobo Collection,Gramya Crescent,Folk Village & Dancer Bandha,"13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",Standard (One Size),1799,workflows/assets/gramya_crescent.png,TRUE,TRUE
+SK-HBO-007,Crescent Hobo,Crescent Hobo Collection,Rekha Bandha,Linear Maroon Ikat Bands,"13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",Standard (One Size),1599,workflows/assets/rekha_bandha.png,TRUE,FALSE
+SK-HBO-008,Crescent Hobo,Crescent Hobo Collection,Hirak Arc,Geometric Golden Diamond Bandha,"13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",Standard (One Size),1699,workflows/assets/hirak_arc.png,TRUE,FALSE
+SK-HBO-009,Crescent Hobo,Crescent Hobo Collection,Kuteer Crescent,Tribal Huts & Dancer Weave,"13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",Standard (One Size),1799,workflows/assets/kuteer_crescent.png,TRUE,FALSE
+SK-HBO-010,Crescent Hobo,Crescent Hobo Collection,Tribal Tale,Traditional Odisha Folk Story Bandha,"13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",Standard (One Size),1799,workflows/assets/tribal_tale.png,TRUE,TRUE
+SK-HBO-011,Crescent Hobo,Crescent Hobo Collection,Van Katha,Forest Wildlife Tiger & Elephant Ikat,"13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",Standard (One Size),1899,workflows/assets/van_katha.png,TRUE,TRUE
+SK-HBO-012,Crescent Hobo,Crescent Hobo Collection,Neel Tara,Royal Blue Geometric Star Bandha,"13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",Standard (One Size),1599,workflows/assets/neel_tara.png,TRUE,FALSE
+SK-HBO-013,Crescent Hobo,Crescent Hobo Collection,Blush Tara,Soft Blush Grey Heathered Ikat,"13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",Standard (One Size),1599,workflows/assets/blush_tara.png,TRUE,FALSE
+SK-HBO-014,Crescent Hobo,Crescent Hobo Collection,Indi-Red Checks,Vibrant Tricolor Checkered Ikat,"13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",Standard (One Size),1699,workflows/assets/indi_red_checks.png,TRUE,FALSE
+SK-OTH-001,Other Bags,In Other Bags,Sambalpuri Handloom Backpack,Ikat Cotton Daypack,"15 x 12 x 5 in",Medium,1899,workflows/assets/other_backpack.png,TRUE,TRUE
+SK-OTH-002,Other Bags,In Other Bags,Sambalpuri Mobile Pouch,Vertical Bandha Phone Sling,"7.5 x 4.5 x 1.5 in",Universal Phone,599,workflows/assets/other_mobile_pouch.png,TRUE,TRUE
+SK-OTH-003,Other Bags,In Other Bags,Traditional Potlis (Set/Piece),Silk-Velvet Festive Drawstring Potli,"9 x 8 in",Standard,899,workflows/assets/other_potlis.png,TRUE,TRUE
+SK-OTH-004,Other Bags,In Other Bags,Classic Handloom Tote Bag,Everyday Cotton Shoulder Tote,"14 x 13 x 4 in",Standard,1299,workflows/assets/other_tote_bag.png,TRUE,TRUE
+SK-OTH-005,Other Bags,In Other Bags,Passapalli Compact Shoulder Bag,Flap Crossbody Shoulder Bag,"10 x 9 x 3 in",Standard,1199,workflows/assets/other_shoulder_bag.png,TRUE,FALSE
+SK-OTH-006,Other Bags,In Other Bags,Ergonomic Chest Sling Bag,Passapalli Multi-Zip Sling,"11 x 7 x 3.5 in",Standard,1099,workflows/assets/other_sling_bag.png,TRUE,FALSE
+SK-OTH-007,Other Bags,In Other Bags,Vertical Utility Bag,Compact Hanging Utility Pouch,"8 x 5 x 2 in",Compact,699,workflows/assets/other_utility_bag.png,TRUE,FALSE
+SK-OTH-008,Other Bags,In Other Bags,Square Sling Bags,Minimalist Geometric Square Bag,"8 x 8 x 2.5 in",Standard,999,workflows/assets/other_square_sling.png,TRUE,FALSE
+SK-OTH-009,Other Bags,In Other Bags,Insulated Handloom Lunch Bag,Water-Resistant Ikat Meal Tote,"10 x 8 x 5.5 in",Standard,799,workflows/assets/other_lunch_bag.png,TRUE,FALSE

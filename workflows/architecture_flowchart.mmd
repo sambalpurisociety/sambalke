@@ -1,0 +1,25 @@
+graph TD
+    subgraph Admin_Workflow ["1. Admin / Product Update Workflow"]
+        AF[Google Form / Admin Form<br/>'Add / Update Product'] -->|Submits new product details| AS[Google Sheet: 'Products' Database]
+        AS -->|Columns: ID, Category, Title, Price INR, Sizes, Images, In_Stock| GAS[Google Apps Script Web API Engine]
+    end
+
+    subgraph Storefront_Workflow ["2. Customer Storefront (Google Site)"]
+        GS[Google Site Storefront<br/>SambalKe Bags & Handlooms] -->|Fetches Live Catalog via GET action=getProducts| GAS
+        GAS -->|Returns JSON Products in INR ₹| GS
+        CUST([Customer]) -->|Browses Bags & Selects Size| GS
+        CUST -->|Clicks 'Order / Inquire' - Enters Mobile & Address| GS
+    end
+
+    subgraph Query_Notification_Workflow ["3. Customer Query & Notification Workflow"]
+        GS -->|POST customer inquiry data| GAS
+        GAS -->|Logs inquiry row with timestamp| OS[Google Sheet: 'Inquiries_Orders']
+        GAS -->|Fetches Configured Email List from| ST[Google Sheet: 'Settings']
+        GAS -->|Dispatches Rich HTML Email Alert| ML[Configured Admin Email List<br/>owner@sambalke.com, sales@...]
+        GAS -->|Returns Inquiry Reference + WhatsApp Link| GS
+        GS -->|1-Click WhatsApp Chat Option| WA[Customer WhatsApp Chat with Seller]
+    end
+
+    style Admin_Workflow fill:#fef3c7,stroke:#d97706,stroke-width:2px;
+    style Storefront_Workflow fill:#e0f2fe,stroke:#0284c7,stroke-width:2px;
+    style Query_Notification_Workflow fill:#f0fdf4,stroke:#16a34a,stroke-width:2px;

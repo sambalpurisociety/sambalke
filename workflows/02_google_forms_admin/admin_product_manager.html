@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SambalKe Admin - Product Catalog Manager</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-900 min-h-screen p-4 md:p-8">
+  <div class="max-w-6xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <header class="bg-white border border-stone-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 mb-2">
+          <span>🔒</span> Admin Product Control Center
+        </div>
+        <h1 class="text-2xl font-extrabold text-stone-900 tracking-tight">SambalKe Handlooms Inventory</h1>
+        <p class="text-xs text-stone-500 mt-1">Add, update, and manage Sambalpuri bags and handloom products for your Google Site storefront.</p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button onclick="toggleAddModal(true)" class="px-4 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1.5">
+          <span>➕</span> Add New Product
+        </button>
+      </div>
+    </header>
+
+    <!-- Apps Script Endpoint Config Banner -->
+    <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs text-amber-950">
+      <div class="flex items-center gap-2">
+        <span class="text-base">⚙️</span>
+        <div>
+          <span class="font-bold">Google Apps Script Web App URL:</span>
+          <span class="text-stone-500 block md:inline md:ml-1">Paste your deployed Web App URL to sync with Google Sheets live</span>
+        </div>
+      </div>
+      <div class="w-full md:w-auto flex items-center gap-2">
+        <input type="url" id="api-endpoint-input" placeholder="https://script.google.com/macros/s/.../exec" class="w-full md:w-80 px-3 py-1.5 bg-white border border-stone-300 rounded-lg text-xs focus:ring-2 focus:ring-amber-700 outline-none">
+        <button onclick="saveApiEndpoint()" class="px-3 py-1.5 bg-stone-900 text-white rounded-lg font-semibold hover:bg-stone-800 transition">Save</button>
+      </div>
+    </div>
+
+    <!-- Inventory Filter & Summary -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="bg-white border border-stone-200 p-4 rounded-xl shadow-sm">
+        <span class="text-xs text-stone-500 font-medium">Total Products</span>
+        <div id="stat-total" class="text-2xl font-black text-stone-900 mt-1">5</div>
+      </div>
+      <div class="bg-white border border-stone-200 p-4 rounded-xl shadow-sm">
+        <span class="text-xs text-stone-500 font-medium">Sambalpuri Bags</span>
+        <div id="stat-bags" class="text-2xl font-black text-amber-800 mt-1">4</div>
+      </div>
+      <div class="bg-white border border-stone-200 p-4 rounded-xl shadow-sm">
+        <span class="text-xs text-stone-500 font-medium">In Stock</span>
+        <div id="stat-instock" class="text-2xl font-black text-emerald-600 mt-1">5</div>
+      </div>
+      <div class="bg-white border border-stone-200 p-4 rounded-xl shadow-sm">
+        <span class="text-xs text-stone-500 font-medium">Store Currency</span>
+        <div class="text-2xl font-black text-stone-900 mt-1">INR (₹)</div>
+      </div>
+    </div>
+
+    <!-- Products Table -->
+    <div class="bg-white border border-stone-200 rounded-2xl shadow-sm overflow-hidden">
+      <div class="p-4 border-b border-stone-100 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div class="flex items-center gap-2">
+          <label class="text-xs font-bold text-stone-600">Category Filter:</label>
+          <select id="filter-category" onchange="renderProductsTable()" class="px-2.5 py-1 text-xs border border-stone-200 rounded-lg bg-stone-50 font-medium">
+            <option value="ALL">All Categories</option>
+            <option value="Bags">Bags</option>
+            <option value="Sarees">Sarees</option>
+            <option value="Kurtas">Kurtas & Apparel</option>
+            <option value="Home Decor">Home Decor</option>
+          </select>
+        </div>
+        <button onclick="exportProductsCSV()" class="text-xs font-semibold text-stone-600 hover:text-stone-900 flex items-center gap-1 border border-stone-200 px-3 py-1.5 rounded-lg">
+          📥 Export Catalog CSV
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-stone-50 text-stone-600 font-bold border-b border-stone-200 uppercase tracking-wider">
+            <tr>
+              <th class="py-3 px-4">Image</th>
+              <th class="py-3 px-4">Product Code & Name</th>
+              <th class="py-3 px-4">Category</th>
+              <th class="py-3 px-4">Sizes</th>
+              <th class="py-3 px-4">Price (₹)</th>
+              <th class="py-3 px-4">Stock Status</th>
+              <th class="py-3 px-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="product-tbody" class="divide-y divide-stone-100">
+            <!-- Dynamic rows injected by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MODAL: ADD / EDIT PRODUCT -->
+    <div id="product-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl border border-stone-200 max-h-[90vh] overflow-y-auto space-y-4">
+        <div class="flex justify-between items-center border-b border-stone-100 pb-3">
+          <h3 id="modal-title" class="text-base font-bold text-stone-900">Add New Sambalpuri Product</h3>
+          <button onclick="toggleAddModal(false)" class="text-stone-400 hover:text-stone-600 font-bold text-lg">&times;</button>
+        </div>
+
+        <form id="product-form" onsubmit="handleSaveProduct(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Product Title *</label>
+            <input type="text" id="prod-title" required placeholder="e.g. Sambalpuri Double Ikat Classic Tote Bag" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1">Category *</label>
+              <select id="prod-category" required class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+                <option value="Bags">Bags (Sambalpuri Handbags)</option>
+                <option value="Sarees">Sarees</option>
+                <option value="Kurtas">Kurtas & Apparel</option>
+                <option value="Dupattas">Dupattas & Shawls</option>
+                <option value="Home Decor">Home Decor</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1">Price in Rupees (₹) *</label>
+              <input type="number" id="prod-price" required min="1" step="1" placeholder="e.g. 1499" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1">Fabric / Weave Type</label>
+              <input type="text" id="prod-fabric" placeholder="e.g. 100% Handloom Cotton Bandha" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1">Available Sizes (comma-separated)</label>
+              <input type="text" id="prod-sizes" placeholder="e.g. Standard, Large" value="Standard, Large" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Photo URL *</label>
+            <input type="url" id="prod-img" required placeholder="https://..." class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+            <p class="text-[10px] text-stone-400 mt-0.5">Use high-resolution image URL or Google Drive direct link.</p>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Description</label>
+            <textarea id="prod-desc" rows="3" placeholder="Handcrafted with authentic Odisha geometric bandha weave..." class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none"></textarea>
+          </div>
+
+          <div class="flex items-center gap-4 pt-1">
+            <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-stone-700">
+              <input type="checkbox" id="prod-instock" checked class="rounded text-amber-800 focus:ring-amber-700"> In Stock
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-stone-700">
+              <input type="checkbox" id="prod-featured" checked class="rounded text-amber-800 focus:ring-amber-700"> Featured on Home
+            </label>
+          </div>
+
+          <div class="pt-3 border-t border-stone-100 flex justify-end gap-2">
+            <button type="button" onclick="toggleAddModal(false)" class="px-4 py-2 border border-stone-200 rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-50">Cancel</button>
+            <button type="submit" class="px-5 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold shadow-sm">Save Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Initial Catalog Data
+    let catalog = [
+      {
+        id: 'SK-BAG-001',
+        category: 'Bags',
+        title: 'Sambalpuri Double Ikat Classic Tote Bag',
+        desc: 'Handcrafted from authentic Odisha cotton bandha weave with rich crimson maroon and geometric motifs.',
+        fabric: '100% Handloom Cotton',
+        sizes: 'Standard, Large',
+        price: 1499,
+        img: '../assets/sambalpuri_tote_bag.jpg',
+        inStock: true,
+        featured: true
+      },
+      {
+        id: 'SK-BAG-002',
+        category: 'Bags',
+        title: 'Sambalpuri Bandha Crossbody Sling Bag',
+        desc: 'Vibrant mustard yellow and indigo blue geometric Odisha handloom weave with adjustable strap.',
+        fabric: 'Handwoven Sambalpuri Ikat',
+        sizes: 'Small, Standard',
+        price: 999,
+        img: '../assets/sambalpuri_sling_bag.jpg',
+        inStock: true,
+        featured: true
+      },
+      {
+        id: 'SK-BAG-003',
+        category: 'Bags',
+        title: 'Handwoven Ikat Padded Laptop Sleeve & Bag',
+        desc: 'Shock-absorbent laptop bag with authentic Sambalpuri black and crimson handloom exterior.',
+        fabric: 'Sambalpuri Ikat Cotton',
+        sizes: '13-14 inch, 15-16 inch',
+        price: 1799,
+        img: '../assets/sambalpuri_laptop_bag.jpg',
+        inStock: true,
+        featured: true
+      },
+      {
+        id: 'SK-BAG-004',
+        category: 'Bags',
+        title: 'Sambalpuri Ethnic Weekend Travel Duffel',
+        desc: 'Spacious cylindrical duffel bag crafted with heavy-gauge Sambalpuri handloom fabric.',
+        fabric: 'Pure Cotton Handloom',
+        sizes: 'Large, XL Travel',
+        price: 2499,
+        img: 'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=400&q=80',
+        inStock: true,
+        featured: false
+      },
+      {
+        id: 'SK-SAR-001',
+        category: 'Sarees',
+        title: 'Traditional Pasapalli Sambalpuri Silk Saree',
+        desc: 'Heritage handloom saree with black & white chessboard body and contrasting red border.',
+        fabric: 'Pure Sambalpuri Silk',
+        sizes: 'Free Size (6.3m)',
+        price: 8499,
+        img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80',
+        inStock: true,
+        featured: false
+      }
+    ];
+
+    // Load from LocalStorage if present
+    const saved = localStorage.getItem('sambalke_admin_catalog');
+    if (saved) {
+      try { catalog = JSON.parse(saved); } catch (e) {}
+    }
+
+    const savedEndpoint = localStorage.getItem('sambalke_api_endpoint');
+    if (savedEndpoint) {
+      document.getElementById('api-endpoint-input').value = savedEndpoint;
+    }
+
+    function saveApiEndpoint() {
+      const val = document.getElementById('api-endpoint-input').value.trim();
+      localStorage.setItem('sambalke_api_endpoint', val);
+      alert('API Endpoint saved successfully!');
+    }
+
+    function toggleAddModal(show) {
+      const modal = document.getElementById('product-modal');
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
+
+    function renderProductsTable() {
+      const filter = document.getElementById('filter-category').value;
+      const tbody = document.getElementById('product-tbody');
+      
+      const filtered = catalog.filter(p => filter === 'ALL' || p.category.toLowerCase() === filter.toLowerCase());
+
+      tbody.innerHTML = filtered.map(p => `
+        <tr class="hover:bg-stone-50/80 transition">
+          <td class="py-3 px-4">
+            <img src="${p.img}" alt="${p.title}" class="w-12 h-12 object-cover rounded-lg border border-stone-200">
+          </td>
+          <td class="py-3 px-4">
+            <span class="text-[10px] font-mono font-bold text-amber-900 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">${p.id}</span>
+            <div class="font-bold text-stone-900 text-xs mt-0.5">${p.title}</div>
+            <div class="text-[11px] text-stone-500 truncate max-w-xs">${p.fabric}</div>
+          </td>
+          <td class="py-3 px-4">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${p.category === 'Bags' ? 'bg-amber-100 text-amber-900' : 'bg-purple-100 text-purple-900'}">${p.category}</span>
+          </td>
+          <td class="py-3 px-4 font-mono text-[11px] text-stone-600">${p.sizes}</td>
+          <td class="py-3 px-4 font-black text-amber-900 text-sm">₹${p.price.toLocaleString('en-IN')}</td>
+          <td class="py-3 px-4">
+            <button onclick="toggleStock('${p.id}')" class="px-2 py-1 rounded-md text-[10px] font-bold transition ${p.inStock ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100' : 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100'}">
+              ${p.inStock ? '● In Stock' : '✕ Out of Stock'}
+            </button>
+          </td>
+          <td class="py-3 px-4 text-right whitespace-nowrap">
+            <button onclick="deleteProduct('${p.id}')" class="text-stone-400 hover:text-rose-600 font-semibold px-2 py-1">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+
+      document.getElementById('stat-total').innerText = catalog.length;
+      document.getElementById('stat-bags').innerText = catalog.filter(p => p.category === 'Bags').length;
+      document.getElementById('stat-instock').innerText = catalog.filter(p => p.inStock).length;
+    }
+
+    function toggleStock(id) {
+      const item = catalog.find(p => p.id === id);
+      if (item) {
+        item.inStock = !item.inStock;
+        saveCatalogLocally();
+        renderProductsTable();
+      }
+    }
+
+    function deleteProduct(id) {
+      if (confirm(`Remove product ${id} from catalog?`)) {
+        catalog = catalog.filter(p => p.id !== id);
+        saveCatalogLocally();
+        renderProductsTable();
+      }
+    }
+
+    function handleSaveProduct(e) {
+      e.preventDefault();
+      const title = document.getElementById('prod-title').value.trim();
+      const category = document.getElementById('prod-category').value;
+      const price = parseFloat(document.getElementById('prod-price').value) || 0;
+      const fabric = document.getElementById('prod-fabric').value.trim() || 'Sambalpuri Handloom';
+      const sizes = document.getElementById('prod-sizes').value.trim() || 'Standard';
+      const img = document.getElementById('prod-img').value.trim();
+      const desc = document.getElementById('prod-desc').value.trim();
+      const inStock = document.getElementById('prod-instock').checked;
+      const featured = document.getElementById('prod-featured').checked;
+
+      const prefix = category === 'Bags' ? 'SK-BAG' : (category === 'Sarees' ? 'SK-SAR' : 'SK-PRD');
+      const nextId = `${prefix}-${('000' + (catalog.length + 1)).slice(-3)}`;
+
+      const newProduct = {
+        id: nextId,
+        category,
+        title,
+        desc,
+        fabric,
+        sizes,
+        price,
+        img,
+        inStock,
+        featured
+      };
+
+      catalog.unshift(newProduct);
+      saveCatalogLocally();
+      toggleAddModal(false);
+      document.getElementById('product-form').reset();
+      renderProductsTable();
+      alert(`Product ${nextId} added successfully!`);
+    }
+
+    function saveCatalogLocally() {
+      localStorage.setItem('sambalke_admin_catalog', JSON.stringify(catalog));
+    }
+
+    function exportProductsCSV() {
+      const headers = ["Product_ID", "Category", "Title", "Description", "Fabric_Type", "Sizes_Available", "Price_INR", "Image_URL", "In_Stock", "Featured"];
+      const rows = catalog.map(p => [
+        p.id,
+        p.category,
+        `"${p.title.replace(/"/g, '""')}"`,
+        `"${(p.desc||'').replace(/"/g, '""')}"`,
+        `"${p.fabric.replace(/"/g, '""')}"`,
+        `"${p.sizes}"`,
+        p.price,
+        `"${p.img}"`,
+        p.inStock ? "TRUE" : "FALSE",
+        p.featured ? "TRUE" : "FALSE"
+      ]);
+
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `sambalke_products_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    renderProductsTable();
+  </script>
+</body>
+</html>

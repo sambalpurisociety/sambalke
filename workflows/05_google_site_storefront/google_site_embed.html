@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SambalKe - The Crescent Hobo & Handloom Bags</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-serif-title { font-family: 'Playfair Display', serif; }
+    .sambal-gradient { background: linear-gradient(135deg, #7c1a22 0%, #991b1b 50%, #450a0a 100%); }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-900 antialiased min-h-screen">
+
+  <!-- ====================================================================
+       CONFIGURATION SCRIPT:
+       Paste your deployed Google Apps Script Web App URL below:
+       ==================================================================== -->
+  <script>
+    const APPS_SCRIPT_URL = ""; // e.g. "https://script.google.com/macros/s/.../exec"
+    const STORE_WHATSAPP = "919876543210"; // Seller WhatsApp number for direct inquiry
+    const BRAND_NAME = "SambalKe";
+  </script>
+
+  <!-- Store Header Banner -->
+  <header class="sambal-gradient text-white border-b border-amber-900/30 shadow-md">
+    <div class="max-w-6xl mx-auto px-4 py-8 md:py-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <div class="space-y-2 max-w-xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-400/20 text-amber-200 border border-amber-400/30">
+          <span>✨</span> SambalKe • Heritage Segment 2.0
+        </div>
+        <h1 class="text-3xl md:text-4xl font-extrabold font-serif-title tracking-tight text-amber-50">
+          The Crescent Hobo
+        </h1>
+        <p class="text-sm text-stone-200 italic font-serif">
+          "Handwoven stories for everyday journey" • Traditional in Motion
+        </p>
+        <p class="text-xs text-stone-300 leading-relaxed pt-1">
+          Authentic Odisha Bandha ikat weaves shaped into an ergonomic crescent silhouette. No online payment required—contact us via WhatsApp or Phone to place your order in Rupees (₹).
+        </p>
+      </div>
+
+      <!-- Dimensions Quick Badge -->
+      <div class="bg-white/10 backdrop-blur-md border border-white/15 p-4 rounded-2xl space-y-2 text-xs w-full md:w-auto">
+        <div class="flex items-center justify-between gap-4">
+          <span class="font-bold text-amber-200 uppercase tracking-wider text-[11px]">Crescent Dimensions</span>
+          <button onclick="toggleDimensionModal(true)" class="text-[11px] underline text-stone-300 hover:text-white">View Diagram</button>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+          <div class="bg-black/20 p-2 rounded-lg">
+            <span class="text-stone-400 block">Height:</span>
+            <span class="font-bold text-white">13.5 in (21.5 in w/ belt)</span>
+          </div>
+          <div class="bg-black/20 p-2 rounded-lg">
+            <span class="text-stone-400 block">Width × Depth:</span>
+            <span class="font-bold text-white">13.5 in × 2.5 in</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Store Notice: No Online Payment Needed -->
+  <div class="bg-amber-100/70 border-b border-amber-200 py-2 px-4 text-center text-xs font-semibold text-amber-950">
+    ℹ️ <strong>Offline Artisan Order:</strong> Select your preferred weave, submit your mobile number, and our team will contact you to confirm delivery & share payment details.
+  </div>
+
+  <!-- Main Storefront Container -->
+  <main class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+    <!-- Collection Filters -->
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-stone-200 pb-4">
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="filterCategory('All')" id="cat-btn-All" class="cat-filter-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-stone-900 text-white shadow-sm">
+          All Products (23)
+        </button>
+        <button onclick="filterCategory('Crescent Hobo')" id="cat-btn-Hobo" class="cat-filter-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-stone-100 text-stone-700 hover:bg-stone-200">
+          🌙 Crescent Hobo Collection (14)
+        </button>
+        <button onclick="filterCategory('Other Bags')" id="cat-btn-Other" class="cat-filter-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-stone-100 text-stone-700 hover:bg-stone-200">
+          🎒 In Other Bags (9)
+        </button>
+      </div>
+
+      <div class="text-xs text-stone-500 font-medium">
+        Showing <span id="product-count" class="font-bold text-stone-900">23</span> items
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Dynamic cards rendered by JavaScript -->
+    </div>
+
+  </main>
+
+  <!-- ====================================================================
+       MODAL: DIMENSIONS SCHEMATIC PREVIEW
+       ==================================================================== -->
+  <div id="dimension-modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-stone-200 p-5 space-y-4">
+      <div class="flex justify-between items-center border-b border-stone-100 pb-2">
+        <h3 class="text-sm font-bold text-stone-900">The Crescent Hobo - Master Dimensions</h3>
+        <button onclick="toggleDimensionModal(false)" class="text-stone-400 hover:text-stone-700 text-xl font-bold">&times;</button>
+      </div>
+      <div class="rounded-xl overflow-hidden border border-stone-200 bg-stone-50">
+        <img src="../assets/catalog/sambalke_hobo_dimensions.png" alt="Dimensions" class="w-full h-auto">
+      </div>
+      <div class="text-xs text-stone-600 space-y-1">
+        <p>• <strong>Width:</strong> 13.5 inches</p>
+        <p>• <strong>Without Belt Height:</strong> 13.5 inches</p>
+        <p>• <strong>With Belt Total Height:</strong> 21.5 inches</p>
+        <p>• <strong>Thickness:</strong> 2.5 inches</p>
+        <p>• Detachable shoulder strap with heavy-duty metal dog-hook clips.</p>
+      </div>
+      <button onclick="toggleDimensionModal(false)" class="w-full py-2 bg-stone-900 text-white text-xs font-bold rounded-xl">Close</button>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: CUSTOMER ORDER INQUIRY (NO ONLINE PAYMENT)
+       ==================================================================== -->
+  <div id="order-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-stone-200 overflow-hidden flex flex-col max-h-[92vh]">
+      
+      <!-- Header -->
+      <div class="sambal-gradient text-white p-4 sm:p-5 flex justify-between items-start">
+        <div>
+          <span class="text-[10px] uppercase font-bold tracking-wider text-amber-200 bg-white/10 px-2 py-0.5 rounded">
+            Artisan Order Inquiry
+          </span>
+          <h3 class="text-lg font-bold text-white mt-1">Reserve Your Handloom Bag</h3>
+          <p class="text-xs text-stone-200">No payment online • We will call/WhatsApp you to confirm delivery</p>
+        </div>
+        <button onclick="closeOrderModal()" class="text-stone-300 hover:text-white text-2xl font-bold leading-none">&times;</button>
+      </div>
+
+      <!-- Body -->
+      <div class="p-5 overflow-y-auto space-y-4">
+        
+        <!-- Preview -->
+        <div class="flex items-center gap-3.5 p-3 rounded-xl bg-stone-50 border border-stone-200">
+          <img id="modal-item-img" src="" alt="Product" class="w-16 h-16 object-contain rounded-lg border border-stone-200 bg-white p-1">
+          <div class="flex-1 min-w-0">
+            <span id="modal-item-code" class="text-[10px] font-mono text-amber-900 font-bold bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">SK-HBO-001</span>
+            <h4 id="modal-item-title" class="text-xs font-bold text-stone-900 truncate mt-0.5">Crimson Jaal Crescent Hobo</h4>
+            <div id="modal-item-dim" class="text-[11px] text-stone-500 font-mono">13.5 x 13.5 x 2.5 in</div>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-xs text-stone-500">Price in Rupees:</span>
+              <span id="modal-item-price" class="text-sm font-extrabold text-amber-900">₹1,699</span>
+            </div>
+          </div>
+        </div>
+
+        <form id="inquiry-form" onsubmit="submitCustomerInquiry(event)" class="space-y-3.5">
+          
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Your Full Name *</label>
+            <input type="text" id="cust-name" required placeholder="e.g. Subhashree Das" class="w-full px-3.5 py-2 text-xs rounded-xl bg-stone-50 border border-stone-300 text-stone-900 focus:ring-2 focus:ring-amber-800 outline-none">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Mobile Number (Calling & WhatsApp) *</label>
+            <div class="relative">
+              <span class="absolute left-3 top-2 text-xs font-bold text-stone-500">+91</span>
+              <input type="tel" id="cust-phone" required pattern="[0-9]{10}" placeholder="9876543210 (10 digits)" class="w-full pl-11 pr-3.5 py-2 text-xs rounded-xl bg-stone-50 border border-stone-300 text-stone-900 focus:ring-2 focus:ring-amber-800 outline-none">
+            </div>
+            <p class="text-[10px] text-stone-500 mt-1">We will send photos & dispatch tracking to this mobile number.</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1">Size / Dimension *</label>
+              <select id="cust-size" class="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 border border-stone-300 text-stone-900 focus:ring-2 focus:ring-amber-800 outline-none font-medium">
+                <option value="Standard">Standard (13.5 x 13.5 in)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1">Quantity *</label>
+              <input type="number" id="cust-qty" min="1" max="10" value="1" onchange="recalculateModalTotal()" class="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 border border-stone-300 text-stone-900 focus:ring-2 focus:ring-amber-800 outline-none font-bold">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Delivery City & Pincode *</label>
+            <input type="text" id="cust-address" required placeholder="e.g. Bhubaneswar - 751024 or Bengaluru - 560034" class="w-full px-3.5 py-2 text-xs rounded-xl bg-stone-50 border border-stone-300 text-stone-900 focus:ring-2 focus:ring-amber-800 outline-none">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Special Message / Questions</label>
+            <textarea id="cust-notes" rows="2" placeholder="e.g. Please confirm fabric feel or if faster dispatch is available." class="w-full px-3.5 py-2 text-xs rounded-xl bg-stone-50 border border-stone-300 text-stone-900 focus:ring-2 focus:ring-amber-800 outline-none"></textarea>
+          </div>
+
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 flex justify-between items-center text-xs">
+            <span class="font-bold text-stone-700">Estimated Total (Pay on confirmation):</span>
+            <span id="modal-estimated-total" class="text-base font-extrabold text-amber-900">₹1,699</span>
+          </div>
+
+          <div class="pt-2 flex flex-col gap-2">
+            <button type="submit" id="submit-inquiry-btn" class="w-full py-2.5 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold shadow-md transition flex items-center justify-center gap-2">
+              <span>📩</span> Submit Order Inquiry (Free)
+            </button>
+            <button type="button" onclick="sendViaDirectWhatsApp()" class="w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center justify-center gap-2">
+              <span>💬</span> Inquire Directly on WhatsApp
+            </button>
+          </div>
+
+        </form>
+
+        <!-- Success Message State -->
+        <div id="modal-success-state" class="hidden text-center py-6 space-y-4">
+          <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+            ✓
+          </div>
+          <div>
+            <h4 class="text-lg font-bold text-stone-900">Inquiry Received!</h4>
+            <p class="text-xs text-stone-500 mt-1 max-w-sm mx-auto">
+              Our team has been notified via email. We will review bag stock and message your mobile number shortly.
+            </p>
+            <div id="success-ref-box" class="mt-3 text-xs font-mono font-bold text-amber-900 bg-amber-50 p-2 rounded-lg border border-amber-200 inline-block">
+              Ref: INQ-PENDING
+            </div>
+          </div>
+          <div class="pt-2">
+            <a id="success-wa-link" href="#" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition shadow-md">
+              <span>💬</span> Chat with Us on WhatsApp Now
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Store Footer -->
+  <footer class="bg-stone-900 text-stone-400 py-8 px-4 border-t border-stone-800 text-xs">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+      <div>
+        <span class="font-bold text-white text-sm">SambalKe Handlooms</span>
+        <p class="text-[11px] text-stone-500 mt-0.5">Heritage Segment 2.0 • Handwoven stories for everyday journey</p>
+      </div>
+      <div class="text-[11px]">
+        All prices in Indian Rupees (₹) • Direct artisan contact
+      </div>
+    </div>
+  </footer>
+
+  <!-- Storefront Logic -->
+  <script>
+    // Authentic SambalKe Catalog
+    let catalog = [
+      // 14 Crescent Hobo Collection Variants
+      {
+        id: "SK-HBO-001",
+        category: "Crescent Hobo",
+        title: "Crimson Jaal Crescent Hobo",
+        weave: "Sambalpuri Double Ikat Jaal",
+        desc: "Red and off-white geometric grid and jaal check ikat with top zip and detachable strap.",
+        dim: "13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",
+        price: 1699,
+        image: "../assets/crimson_jaal.png",
+        inStock: true
+      },
+      {
+        id: "SK-HBO-002",
+        category: "Crescent Hobo",
+        title: "Regal Bloom Crescent Hobo",
+        weave: "Magenta Floral Bandha Ikat",
+        desc: "Deep magenta-pink traditional Sambalpuri floral bandha with antique brass dog-hook clips.",
+        dim: "13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",
+        price: 1699,
+        image: "../assets/regal_bloom.png",
+        inStock: true
+      },
+      {
+        id: "SK-HBO-003",
+        category: "Crescent Hobo",
+        title: "Floral Duet Crescent Hobo",
+        weave: "Indigo Floral Ikat",
+        desc: "Rich indigo blue field accented with bright yellow and pink floral bandha motifs.",
+        dim: "13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",
+        price: 1699,
+        image: "../assets/floral_duet.png",
+        inStock: true
+      },
+      {
+        id: "SK-HBO-004",
+        category: "Crescent Hobo",
+        title: "Konark Chakra Crescent Hobo",
+        weave: "Sun Temple Heritage Bandha",
+        desc: "Iconic chariot wheel motifs inspired by Sun Temple Konark in black, gold, and red bandha.",
+        dim: "13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",
+        price: 1899,
+        image: "../assets/konark_chakra.png",
+        inStock: true
+      },
+      {
+        id: "SK-HBO-005",
+        category: "Crescent Hobo",
+        title: "Classic Passapalli Crescent Hobo",
+        weave: "Odisha Chessboard Bandha",
+        desc: "Timeless Odisha chessboard check bandha in bold red, black, and emerald green.",
+        dim: "13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",
+        price: 1799,
+        image: "../assets/classic_passapalli.png",
+        inStock: true
+      },
+      {
+        id: "SK-HBO-006",
+        category: "Crescent Hobo",
+        title: "Gramya Crescent Hobo",
+        weave: "Folk Village & Dancer Bandha",
+        desc: "Tribal dance and village life folk motifs in traditional black, red, and ivory.",
+        dim: "13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",
+        price: 1799,
+        image: "../assets/gramya_crescent.png",
+        inStock: true
+      },
+      {
+        id: "SK-HBO-007",
+        category: "Crescent Hobo",
+        title: "Rekha Bandha Crescent Hobo",
+        weave: "Linear Maroon Ikat Bands",
+        desc: "Sophisticated vertical linear ikat stripes in deep wine and crimson maroon.",
+        dim: "13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",
+        price: 1599,
+        image: "../assets/rekha_bandha.png",
+        inStock: true
+      },
+      {
+        id: "SK-HBO-008",
+        category: "Crescent Hobo",
+        title: "Hirak Arc Crescent Hobo",
+        weave: "Golden Diamond Bandha",
+        desc: "Golden mustard, black, and amber geometric diamond bandha with crescent silhouette.",
+        dim: "13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",
+        price: 1699,
+        image: "../assets/hirak_arc.png",
+        inStock: true
+      },
+      {
+        id: "SK-HBO-009",
+        category: "Crescent Hobo",
+        title: "Kuteer Crescent Hobo",
+        weave: "Tribal Huts & Dancer Weave",
+        desc: "Village life motifs with traditional kuteer (huts), dancers, and chessboard check bandha.",
+        dim: "13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",
+        price: 1799,
+        image: "../assets/kuteer_crescent.png",
+        inStock: true
+      },
+      {
+        id: "SK-HBO-010",
+        category: "Crescent Hobo",
+        title: "Tribal Tale Crescent Hobo",
+        weave: "Odisha Folk Story Bandha",
+        desc: "Folk tribal figures, birds, and traditional temple borders in red, black, and white.",
+        dim: "13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",
+        price: 1799,
+        image: "../assets/tribal_tale.png",
+        inStock: true
+      },
+      {
+        id: "SK-HBO-011",
+        category: "Crescent Hobo",
+        title: "Van Katha Crescent Hobo",
+        weave: "Forest Wildlife Ikat",
+        desc: "Forest folklore wildlife weave featuring elephants, tigers, and deer in rich vibrant ikat.",
+        dim: "13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",
+        price: 1899,
+        image: "../assets/van_katha.png",
+        inStock: true
+      },
+      {
+        id: "SK-HBO-012",
+        category: "Crescent Hobo",
+        title: "Neel Tara Crescent Hobo",
+        weave: "Royal Blue Star Bandha",
+        desc: "Royal blue weave studded with star (tara) geometric ikat motifs in red and white.",
+        dim: "13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",
+        price: 1599,
+        image: "../assets/neel_tara.png",
+        inStock: true
+      },
+      {
+        id: "SK-HBO-013",
+        category: "Crescent Hobo",
+        title: "Blush Tara Crescent Hobo",
+        weave: "Soft Blush Grey Ikat",
+        desc: "Contemporary soft blush pink and heather grey bandha weave with delicate star motifs.",
+        dim: "13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",
+        price: 1599,
+        image: "../assets/blush_tara.png",
+        inStock: true
+      },
+      {
+        id: "SK-HBO-014",
+        category: "Crescent Hobo",
+        title: "Indi-Red Checks Crescent Hobo",
+        weave: "Tricolor Checkered Ikat",
+        desc: "Bold royal blue, scarlet red, and white checkerboard passapalli variant.",
+        dim: "13.5 x 13.5 x 2.5 in (Belt: 21.5 in)",
+        price: 1699,
+        image: "../assets/indi_red_checks.png",
+        inStock: true
+      },
+
+      // 9 "In Other Bags" Collection Models
+      {
+        id: "SK-OTH-001",
+        category: "Other Bags",
+        title: "Sambalpuri Handloom Backpack",
+        weave: "Cotton Ikat Daypack",
+        desc: "Padded everyday daypack with zip compartment in peach-terracotta geometric ikat.",
+        dim: "15 x 12 x 5 in",
+        price: 1899,
+        image: "../assets/other_backpack.png",
+        inStock: true
+      },
+      {
+        id: "SK-OTH-002",
+        category: "Other Bags",
+        title: "Sambalpuri Mobile Pouch Sling",
+        weave: "Vertical Bandha Phone Sling",
+        desc: "Sleek vertical mobile pouch with magnetic lock in crimson bandha.",
+        dim: "7.5 x 4.5 x 1.5 in",
+        price: 599,
+        image: "../assets/other_mobile_pouch.png",
+        inStock: true
+      },
+      {
+        id: "SK-OTH-003",
+        category: "Other Bags",
+        title: "Traditional Bridal / Festive Potlis",
+        weave: "Silk-Velvet Zari Potli",
+        desc: "Silk-velvet handcrafted potli bag with gold zari lace and pearl-beaded handle.",
+        dim: "9 x 8 in",
+        price: 899,
+        image: "../assets/other_potlis.png",
+        inStock: true
+      },
+      {
+        id: "SK-OTH-004",
+        category: "Other Bags",
+        title: "Classic Handloom Tote Bag",
+        weave: "Pure Cotton Shoulder Tote",
+        desc: "Spacious everyday shoulder tote bag with zip closure and handwoven folk motifs.",
+        dim: "14 x 13 x 4 in",
+        price: 1299,
+        image: "../assets/other_tote_bag.png",
+        inStock: true
+      },
+      {
+        id: "SK-OTH-005",
+        category: "Other Bags",
+        title: "Passapalli Compact Shoulder Bag",
+        weave: "Chessboard Check Bandha",
+        desc: "Flap crossbody shoulder bag in Passapalli checkered cotton with wide black strap.",
+        dim: "10 x 9 x 3 in",
+        price: 1199,
+        image: "../assets/other_shoulder_bag.png",
+        inStock: true
+      },
+      {
+        id: "SK-OTH-006",
+        category: "Other Bags",
+        title: "Ergonomic Chest Sling Bag",
+        weave: "Passapalli Multi-Zip Sling",
+        desc: "Multi-pocket ergonomic single-strap chest sling in Passapalli pattern.",
+        dim: "11 x 7 x 3.5 in",
+        price: 1099,
+        image: "../assets/other_sling_bag.png",
+        inStock: true
+      },
+      {
+        id: "SK-OTH-007",
+        category: "Other Bags",
+        title: "Vertical Utility Bag",
+        weave: "Passapalli Mini Utility",
+        desc: "Compact vertical utility pouch with detachable lanyard strap.",
+        dim: "8 x 5 x 2 in",
+        price: 699,
+        image: "../assets/other_utility_bag.png",
+        inStock: true
+      },
+      {
+        id: "SK-OTH-008",
+        category: "Other Bags",
+        title: "Square Sling Bags (Set)",
+        weave: "Geometric Square Ikat",
+        desc: "Minimalist square sling bag set with zipper compartments.",
+        dim: "8 x 8 x 2.5 in",
+        price: 999,
+        image: "../assets/other_square_sling.png",
+        inStock: true
+      },
+      {
+        id: "SK-OTH-009",
+        category: "Other Bags",
+        title: "Insulated Handloom Lunch Bag",
+        weave: "Water-Resistant Grey Ikat",
+        desc: "Insulated water-resistant lunch tote in subtle grey/white ikat with dual grab handles.",
+        dim: "10 x 8 x 5.5 in",
+        price: 799,
+        image: "../assets/other_lunch_bag.png",
+        inStock: true
+      }
+    ];
+
+    let activeCategory = 'All';
+    let selectedProduct = null;
+
+    function renderProducts() {
+      const grid = document.getElementById('product-grid');
+      const filtered = catalog.filter(p => activeCategory === 'All' || p.category.toLowerCase() === activeCategory.toLowerCase());
+      document.getElementById('product-count').innerText = filtered.length;
+
+      grid.innerHTML = filtered.map(p => `
+        <div class="bg-white border border-stone-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col group">
+          
+          <!-- Image -->
+          <div class="relative aspect-square overflow-hidden bg-stone-50 flex items-center justify-center p-3 border-b border-stone-100">
+            <img src="${p.image}" alt="${p.title}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-md text-amber-200 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+              ${p.weave}
+            </span>
+          </div>
+
+          <!-- Product Details -->
+          <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+            <div class="space-y-1">
+              <div class="flex items-center justify-between text-[11px] text-stone-500 font-mono">
+                <span>${p.id}</span>
+                <span class="text-amber-900 font-bold bg-amber-50 px-2 py-0.5 rounded">${p.category}</span>
+              </div>
+              <h3 class="font-bold text-stone-900 text-sm leading-snug group-hover:text-amber-900 transition">${p.title}</h3>
+              <p class="text-[11px] text-stone-500 line-clamp-2 leading-relaxed">${p.desc}</p>
+            </div>
+
+            <!-- Dimensions -->
+            <div class="bg-stone-50 p-2 rounded-lg text-[10px] text-stone-600 font-mono flex items-center justify-between">
+              <span>Size / Dim:</span>
+              <span class="font-bold text-stone-800">${p.dim}</span>
+            </div>
+
+            <!-- Price and Buy Action -->
+            <div class="pt-1 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] text-stone-400 block font-medium">Price in Rupees</span>
+                <span class="text-lg font-black text-amber-900">₹${p.price.toLocaleString('en-IN')}</span>
+              </div>
+
+              <button onclick="openOrderModal('${p.id}')" class="px-3.5 py-1.5 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1">
+                <span>🛍️</span> Inquire / Buy
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      `).join('');
+    }
+
+    function filterCategory(cat) {
+      activeCategory = cat;
+      document.querySelectorAll('.cat-filter-btn').forEach(btn => {
+        btn.classList.remove('bg-stone-900', 'text-white');
+        btn.classList.add('bg-stone-100', 'text-stone-700');
+      });
+
+      let btnId = 'cat-btn-All';
+      if (cat === 'Crescent Hobo') btnId = 'cat-btn-Hobo';
+      else if (cat === 'Other Bags') btnId = 'cat-btn-Other';
+
+      const activeBtn = document.getElementById(btnId);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-stone-100', 'text-stone-700');
+        activeBtn.classList.add('bg-stone-900', 'text-white');
+      }
+
+      renderProducts();
+    }
+
+    function toggleDimensionModal(show) {
+      const modal = document.getElementById('dimension-modal');
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
+
+    function openOrderModal(id) {
+      selectedProduct = catalog.find(p => p.id === id);
+      if (!selectedProduct) return;
+
+      document.getElementById('modal-item-img').src = selectedProduct.image;
+      document.getElementById('modal-item-code').innerText = selectedProduct.id;
+      document.getElementById('modal-item-title').innerText = selectedProduct.title;
+      document.getElementById('modal-item-dim').innerText = selectedProduct.dim;
+      document.getElementById('modal-item-price').innerText = `₹${selectedProduct.price.toLocaleString('en-IN')}`;
+
+      const sizeSelect = document.getElementById('cust-size');
+      sizeSelect.innerHTML = `<option value="${selectedProduct.dim}">${selectedProduct.dim}</option>`;
+
+      document.getElementById('cust-qty').value = 1;
+      recalculateModalTotal();
+
+      // Reset
+      document.getElementById('inquiry-form').reset();
+      document.getElementById('inquiry-form').classList.remove('hidden');
+      document.getElementById('modal-success-state').classList.add('hidden');
+      document.getElementById('submit-inquiry-btn').disabled = false;
+      document.getElementById('submit-inquiry-btn').innerText = "📩 Submit Order Inquiry (Free)";
+
+      document.getElementById('order-modal').classList.remove('hidden');
+    }
+
+    function closeOrderModal() {
+      document.getElementById('order-modal').classList.add('hidden');
+    }
+
+    function recalculateModalTotal() {
+      if (!selectedProduct) return;
+      const qty = parseInt(document.getElementById('cust-qty').value, 10) || 1;
+      const total = selectedProduct.price * qty;
+      document.getElementById('modal-estimated-total').innerText = `₹${total.toLocaleString('en-IN')}`;
+    }
+
+    async function submitCustomerInquiry(e) {
+      e.preventDefault();
+      if (!selectedProduct) return;
+
+      const name = document.getElementById('cust-name').value.trim();
+      const phone = document.getElementById('cust-phone').value.trim();
+      const size = document.getElementById('cust-size').value;
+      const qty = parseInt(document.getElementById('cust-qty').value, 10) || 1;
+      const address = document.getElementById('cust-address').value.trim();
+      const notes = document.getElementById('cust-notes').value.trim();
+      const total = selectedProduct.price * qty;
+
+      const payload = {
+        customerName: name,
+        mobileNumber: "+91" + phone.replace(/^0+/, ''),
+        productId: selectedProduct.id,
+        productTitle: selectedProduct.title,
+        selectedSize: size,
+        quantity: qty,
+        unitPrice: selectedProduct.price,
+        estimatedTotal: total,
+        deliveryAddress: address,
+        customerNotes: notes
+      };
+
+      const submitBtn = document.getElementById('submit-inquiry-btn');
+      submitBtn.disabled = true;
+      submitBtn.innerText = "⏳ Dispatching to artisan...";
+
+      const inquiryRef = "INQ-" + Math.floor(1000 + Math.random() * 9000);
+      const waLink = `https://wa.me/${STORE_WHATSAPP}?text=` + encodeURIComponent(
+        `Hello ${BRAND_NAME},\nI wish to order:\n• Product: ${selectedProduct.title} (${selectedProduct.id})\n• Dimensions: ${size}\n• Quantity: ${qty}\n• Estimated Total: ₹${total.toLocaleString('en-IN')}\n• Name: ${name}\n• Phone: ${payload.mobileNumber}\n• Delivery: ${address}\nPlease confirm stock availability!`
+      );
+
+      if (APPS_SCRIPT_URL) {
+        try {
+          await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } catch (err) {
+          console.warn("Apps Script submission:", err);
+        }
+      }
+
+      document.getElementById('inquiry-form').classList.add('hidden');
+      document.getElementById('modal-success-state').classList.remove('hidden');
+      document.getElementById('success-ref-box').innerText = `Ref: ${inquiryRef}`;
+      document.getElementById('success-wa-link').href = waLink;
+    }
+
+    function sendViaDirectWhatsApp() {
+      if (!selectedProduct) return;
+      const name = document.getElementById('cust-name').value.trim() || "Customer";
+      const phone = document.getElementById('cust-phone').value.trim() || "Not provided";
+      const size = document.getElementById('cust-size').value;
+      const qty = parseInt(document.getElementById('cust-qty').value, 10) || 1;
+      const address = document.getElementById('cust-address').value.trim() || "To be confirmed";
+      const total = selectedProduct.price * qty;
+
+      const waMsg = `Hello ${BRAND_NAME},\n\nI want to order this Sambalpuri item:\n• *Bag:* ${selectedProduct.title} (${selectedProduct.id})\n• *Dimensions:* ${size}\n• *Quantity:* ${qty}\n• *Price:* ₹${total.toLocaleString('en-IN')}\n• *My Name:* ${name}\n• *Phone:* ${phone}\n• *City/Address:* ${address}\n\nPlease share payment details and dispatch estimate!`;
+
+      window.open(`https://wa.me/${STORE_WHATSAPP}?text=${encodeURIComponent(waMsg)}`, '_blank');
+    }
+
+    // Init
+    renderProducts();
+  </script>
+</body>
+</html>

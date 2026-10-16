@@ -1,0 +1,70 @@
+.gitignore
+  h_295dae1479a15c 1-6
+assets/index-B_xUbY1l.css
+  h_295dae1479a15c 1
+assets/index-D0bxd809.js
+  h_295dae1479a15c 1-4229
+index.html
+  h_295dae1479a15c 1,3-17
+package.json
+  h_295dae1479a15c 1-11
+react-app/.gitignore
+  h_295dae1479a15c 1-24
+react-app/.oxlintrc.json
+  h_295dae1479a15c 1-8
+react-app/README.md
+  h_295dae1479a15c 1-16
+react-app/index.html
+  h_295dae1479a15c 1-17
+react-app/package-lock.json
+  h_295dae1479a15c 1-1296
+react-app/package.json
+  h_295dae1479a15c 1-26
+react-app/public/favicon.svg
+  h_295dae1479a15c 1
+react-app/public/icons.svg
+  h_295dae1479a15c 1-24
+react-app/src/App.css
+  h_295dae1479a15c 1-184
+react-app/src/App.jsx
+  h_295dae1479a15c 1-300
+react-app/src/assets/react.svg
+  h_295dae1479a15c 1
+react-app/src/assets/vite.svg
+  h_295dae1479a15c 1
+react-app/src/components/AdminModal.jsx
+  h_295dae1479a15c 1-436
+react-app/src/components/CategoriesSection.jsx
+  h_295dae1479a15c 1-106
+react-app/src/components/Gallery.jsx
+  h_295dae1479a15c 1-340
+react-app/src/components/Header.jsx
+  h_295dae1479a15c 1-107
+react-app/src/components/HeroBanner.jsx
+  h_295dae1479a15c 1-64
+react-app/src/components/InterestedTray.jsx
+  h_295dae1479a15c 1-73
+react-app/src/components/OrderForm.jsx
+  h_295dae1479a15c 1-346
+react-app/src/components/ProductModal.jsx
+  h_295dae1479a15c 1-675
+react-app/src/data/initialData.js
+  h_295dae1479a15c 1-193
+react-app/src/index.css
+  h_295dae1479a15c 1-258
+react-app/src/main.jsx
+  h_295dae1479a15c 1-10
+react-app/vite.config.js
+  h_295dae1479a15c 1-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "23fe0e850d4ca5b9ca0e5f72e35584c73a958e69",
+  "prompts": {},
+  "humans": {
+    "h_295dae1479a15c": {
+      "author": "nsarangi1 <nsarangi@cisco.com>"
+    }
+  }
+}

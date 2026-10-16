@@ -161,10 +161,10 @@ export default function Gallery({
             </div>
           </div>
 
-          {/* Interactive Hero Image Canvas */}
+          {/* Interactive Hero Image Canvas - Maximized Size */}
           <div
             onClick={() => onOpenModal(activeProductKey, '2d')}
-            className="group relative aspect-square sm:aspect-[16/9] md:aspect-[21/9] max-h-[460px] w-full rounded-2xl overflow-hidden bg-gradient-to-b from-stone-900/90 via-stone-900/60 to-stone-950 border border-white/10 flex items-center justify-center cursor-pointer shadow-inner"
+            className="group relative aspect-square sm:aspect-[4/3] md:aspect-[16/10] max-h-[600px] min-h-[380px] sm:min-h-[480px] w-full rounded-2xl overflow-hidden bg-gradient-to-b from-stone-900/90 via-stone-900/60 to-stone-950 border border-white/10 flex items-center justify-center cursor-pointer shadow-inner p-4 sm:p-8"
           >
             {/* Subtle Texture Grid Backdrop */}
             <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
@@ -172,7 +172,7 @@ export default function Gallery({
             <img
               src={currentProduct.img}
               alt={currentProduct.title}
-              className="max-h-[85%] max-w-[85%] object-contain transition-transform duration-500 ease-out group-hover:scale-105 drop-shadow-[0_20px_35px_rgba(0,0,0,0.8)]"
+              className="w-full h-full max-h-[96%] max-w-[96%] object-contain transition-transform duration-500 ease-out group-hover:scale-105 drop-shadow-[0_25px_45px_rgba(0,0,0,0.85)]"
             />
 
             {/* Hover Indicator Overlay */}

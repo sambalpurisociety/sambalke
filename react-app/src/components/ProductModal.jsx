@@ -470,8 +470,8 @@ export default function ProductModal({
 
       </div>
 
-      {/* Main Showcase Stage */}
-      <div className="relative flex-1 my-3 flex items-center justify-center min-h-[360px] sm:min-h-[440px]">
+      {/* Main Showcase Stage - Maximized Canvas */}
+      <div className="relative flex-1 my-2 flex items-center justify-center min-h-[460px] sm:min-h-[560px] md:min-h-[640px] w-full">
         
         {/* Navigation Arrows */}
         <button
@@ -490,23 +490,23 @@ export default function ProductModal({
           <ChevronRight className="w-6 h-6" />
         </button>
 
-        {/* MODE 1: 2D Ultra-HD Photo Zoom */}
+        {/* MODE 1: 2D Ultra-HD Photo Zoom - Maximized Size */}
         {viewMode === '2d' && (
-          <div className="w-full h-full flex flex-col items-center justify-center p-2">
-            <div className="relative max-w-full max-h-[62vh] flex items-center justify-center overflow-auto">
+          <div className="w-full h-full flex-1 flex flex-col items-center justify-center p-1 sm:p-3">
+            <div className="relative w-full h-full flex items-center justify-center overflow-auto max-h-[75vh]">
               <img
                 src={product.img}
                 alt={product.title}
                 onClick={() => setIsZoomed(!isZoomed)}
-                className={`max-h-[58vh] max-w-full object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.8)] transition-transform duration-300 rounded-2xl cursor-pointer ${
-                  isZoomed ? 'scale-150 cursor-zoom-out' : 'cursor-zoom-in'
+                className={`w-auto h-auto max-h-[72vh] max-w-[92vw] sm:max-w-[85vw] object-contain drop-shadow-[0_25px_50px_rgba(0,0,0,0.9)] transition-transform duration-300 rounded-2xl cursor-pointer ${
+                  isZoomed ? 'scale-150 sm:scale-175 cursor-zoom-out' : 'cursor-zoom-in'
                 }`}
                 title="Click to toggle 150% zoom"
               />
             </div>
             <div className="mt-2 text-center text-xs text-stone-400 flex items-center gap-2">
               {isZoomed ? <ZoomOut className="w-4 h-4 text-amber-400" /> : <ZoomIn className="w-4 h-4 text-amber-400" />}
-              <span>{isZoomed ? 'Click to reset view' : 'Click image to inspect weave details up close (150% Zoom)'}</span>
+              <span>{isZoomed ? 'Click to reset view' : 'Click image to inspect weave details up close'}</span>
             </div>
           </div>
         )}
@@ -525,7 +525,7 @@ export default function ProductModal({
             {/* Canvas Container */}
             <div
               ref={canvasContainerRef}
-              className="relative w-full max-w-2xl h-[300px] sm:h-[380px] flex items-center justify-center cursor-grab active:cursor-grabbing"
+              className="relative w-full max-w-4xl h-[360px] sm:h-[450px] md:h-[500px] flex items-center justify-center cursor-grab active:cursor-grabbing"
             />
 
             {/* Floating 3D Controls Panel */}

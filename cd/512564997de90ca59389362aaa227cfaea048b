@@ -1,0 +1,24 @@
+index.html
+  h_295dae1479a15c 6-12,424-436
+workflows/01_google_sheets_setup/settings_schema.csv
+  h_295dae1479a15c 2-3,5
+workflows/03_apps_script_backend/Code.gs
+  h_295dae1479a15c 270-271,298,316,508-509
+workflows/04_notifications_and_email/email_template.html
+  h_295dae1479a15c 119
+workflows/05_google_site_storefront/google_site_embed.html
+  h_295dae1479a15c 25,246-249
+workflows/SAMBALKE_PRODUCT_CATALOG.md
+  h_295dae1479a15c 7-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cd512564997de90ca59389362aaa227cfaea048b",
+  "prompts": {},
+  "humans": {
+    "h_295dae1479a15c": {
+      "author": "nsarangi1 <nsarangi@cisco.com>"
+    }
+  }
+}

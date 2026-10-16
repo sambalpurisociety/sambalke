@@ -4,28 +4,41 @@ Google Sheets acts as the database for **SambalKe Handlooms**. It requires **zer
 
 ---
 
-## 🗂️ The Three Required Tabs
+## 🗂️ The Database Tabs
+Create a single Google Spreadsheet named **`SambalKe_Store_Database`** and set up the following tabs:
 
-Create a single Google Spreadsheet named **`SambalKe_Store_Database`** and set up 3 tabs:
-
-### Tab 1: `Products`
-Stores all your live Sambalpuri merchandise.
-- Refer to [`products_catalog_schema.csv`](file:///Users/nsarangi1/Desktop/software_developement/POC/websites/google_sambalke/workflows/01_google_sheets_setup/products_catalog_schema.csv) for sample rows.
+### Tab 1: `Categories`
+Stores all product categories, subcategories, and category-specific sizes.
+- Refer to [`categories_schema.csv`](file:///Users/nsarangi1/Desktop/software_developement/POC/websites/google_sambalke/workflows/01_google_sheets_setup/categories_schema.csv).
 - **Header Columns**:
-  1. `Product_ID`: e.g. `SK-BAG-001`
-  2. `Category`: e.g. `Bags`, `Sarees`, `Kurtas`, `Home Decor`
-  3. `Title`: Product display name
-  4. `Description`: Detailed artisan and weave description
-  5. `Fabric_Type`: e.g. `100% Handloom Cotton`, `Pure Sambalpuri Silk`
-  6. `Sizes_Available`: Comma-separated sizes, e.g. `Standard, Large` or `S, M, L, XL`
-  7. `Price_INR`: Integer price in Rupees (₹) without currency signs (e.g. `1499`)
-  8. `Image_URL`: Web link or Google Drive direct image URL
-  9. `In_Stock`: `TRUE` or `FALSE` (if `FALSE`, product is hidden or marked Sold Out on Google Site)
-  10. `Featured`: `TRUE` or `FALSE`
+  1. `Category_ID`: Unique code (e.g. `CAT-HBO`, `CAT-OTH`, `CAT-SAR`, `CAT-APP`, `CAT-HOM`)
+  2. `Category_Name`: Display name (e.g. `The Crescent Hobo`, `Sambalpuri Sarees`)
+  3. `Icon`: Emoji icon (e.g. `🌙`, `🥻`, `👜`)
+  4. `Subcategories`: Semicolon-separated subcategories (e.g. `Heritage Bandha;Passapalli Weave;Floral & Nature Ikat`)
+  5. `Available_Sizes`: Semicolon-separated sizes defined for this category (e.g. `Standard (13.5 x 13.5 x 2.5 in);Small (12 x 12 in);Extra Large (15 x 15 in)`)
+  6. `Description`: Description of the category
+  7. `Status`: `ACTIVE` or `INACTIVE`
 
 ---
 
-### Tab 2: `Inquiries_Orders`
+### Tab 2: `Products`
+Stores all your live Sambalpuri merchandise.
+- Refer to [`products_catalog_schema.csv`](file:///Users/nsarangi1/Desktop/software_developement/POC/websites/google_sambalke/workflows/01_google_sheets_setup/products_catalog_schema.csv) for sample rows.
+- **Header Columns**:
+  1. `Product_ID`: e.g. `SK-HBO-001`, `SK-OTH-001`
+  2. `Category`: e.g. `The Crescent Hobo`, `In Other Bags`, `Sambalpuri Sarees`
+  3. `Subcategory`: e.g. `Floral & Nature Ikat`, `Backpacks`
+  4. `Title`: Product display name
+  5. `Description`: Detailed artisan and weave description
+  6. `Fabric_Type`: e.g. `100% Handloom Cotton`, `Pure Sambalpuri Silk`
+  7. `Sizes_Available`: Category-defined dimensions/sizes
+  8. `Price_INR`: Integer price in Rupees (₹) without currency signs (e.g. `1699`)
+  9. `Image_URL`: Web link or image URL
+  10. `In_Stock`: `TRUE` or `FALSE`
+
+---
+
+### Tab 3: `Inquiries_Orders`
 Automatically populated when a customer submits an inquiry on your Google Site.
 - Refer to [`inquiries_orders_schema.csv`](file:///Users/nsarangi1/Desktop/software_developement/POC/websites/google_sambalke/workflows/01_google_sheets_setup/inquiries_orders_schema.csv).
 - **Header Columns**:

@@ -56,17 +56,20 @@
       </div>
 
       <!-- Navigation Tabs -->
-      <nav class="flex items-center p-1 bg-stone-100 border border-stone-200 rounded-xl gap-1">
-        <button id="tab-btn-store" onclick="switchTab('store')" class="px-3.5 py-2 text-xs font-bold rounded-lg transition-all bg-amber-900 text-white shadow-sm">
+      <nav class="flex items-center p-1 bg-stone-100 border border-stone-200 rounded-xl gap-1 overflow-x-auto">
+        <button id="tab-btn-store" onclick="switchTab('store')" class="px-3.5 py-2 text-xs font-bold rounded-lg transition-all bg-amber-900 text-white shadow-sm whitespace-nowrap">
           🛍️ Customer View
         </button>
-        <button id="tab-btn-cost" onclick="switchTab('cost')" class="px-3 py-2 text-xs font-semibold rounded-lg transition-all text-stone-600 hover:text-stone-900 flex items-center gap-1">
+        <button id="tab-btn-cost" onclick="switchTab('cost')" class="px-3 py-2 text-xs font-semibold rounded-lg transition-all text-stone-600 hover:text-stone-900 flex items-center gap-1 whitespace-nowrap">
           <span id="cost-lock-icon">🔒</span> Costing (₹)
         </button>
-        <button id="tab-btn-orders" onclick="switchTab('orders')" class="px-3 py-2 text-xs font-semibold rounded-lg transition-all text-stone-600 hover:text-stone-900 flex items-center gap-1.5">
+        <button id="tab-btn-orders" onclick="switchTab('orders')" class="px-3 py-2 text-xs font-semibold rounded-lg transition-all text-stone-600 hover:text-stone-900 flex items-center gap-1.5 whitespace-nowrap">
           <span id="orders-lock-icon">🔒</span> Inquiries <span id="orders-badge" class="px-1.5 py-0.2 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold">0</span>
         </button>
-        <button id="admin-lock-btn" onclick="lockAdminSession()" class="hidden px-2.5 py-1.5 text-[10px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg ml-1">
+        <button id="tab-btn-taxonomy" onclick="switchTab('taxonomy')" class="px-3 py-2 text-xs font-semibold rounded-lg transition-all text-stone-600 hover:text-stone-900 flex items-center gap-1.5 whitespace-nowrap">
+          <span id="taxonomy-lock-icon">🔒</span> Categories & Sizes
+        </button>
+        <button id="admin-lock-btn" onclick="lockAdminSession()" class="hidden px-2.5 py-1.5 text-[10px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg ml-1 whitespace-nowrap">
           Lock 🔒
         </button>
       </nav>
@@ -434,6 +437,149 @@
           </tbody>
         </table>
       </div>
+    <!-- TAB 4: CATEGORIES & SIZES (ADMIN) -->
+    <section id="tab-taxonomy" class="hidden bg-white border border-stone-200 rounded-2xl p-6 shadow-sm space-y-6">
+      <div class="border-b border-stone-100 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200 mb-1">
+            <span>🔒</span> Admin Catalog Architecture
+          </div>
+          <h2 class="text-xl font-bold text-stone-900">Category, Subcategory & Size Engine</h2>
+          <p class="text-xs text-stone-500">Admins can create top-level categories, subcategories, and define sizes for each category.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="exportTaxonomyCSVStorefront()" class="px-3 py-1.5 rounded-lg border border-stone-200 bg-stone-50 hover:bg-stone-100 text-xs font-semibold text-stone-700 flex items-center gap-1.5">
+            📥 Export Categories CSV
+          </button>
+          <a href="workflows/02_google_forms_admin/admin_product_manager.html" target="_blank" class="px-3 py-1.5 rounded-lg bg-amber-900 text-white hover:bg-amber-950 text-xs font-bold transition flex items-center gap-1">
+            <span>⚙️</span> Inventory Manager &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left 7 Cols: Category Details, Subcategories & Sizes Editor -->
+        <div class="lg:col-span-7 space-y-4">
+          <div class="bg-stone-50 p-5 rounded-2xl border border-stone-200 space-y-4">
+            
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+              <label class="text-xs font-bold text-stone-800 uppercase tracking-wider">
+                Select Active Category to Configure:
+              </label>
+              <button onclick="handleStorefrontDeleteCategory()" class="text-xs font-bold text-rose-700 hover:text-rose-900 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-2.5 py-1 rounded-lg transition">
+                🗑️ Delete Category
+              </button>
+            </div>
+
+            <select id="storefront-manage-cat-select" onchange="renderStorefrontCategoryDetails()" class="w-full px-3.5 py-2.5 text-xs border border-stone-300 rounded-xl bg-white font-bold text-stone-900 outline-none focus:ring-2 focus:ring-amber-900">
+              <!-- Dynamically populated -->
+            </select>
+
+            <!-- Card info -->
+            <div class="p-4 bg-white rounded-xl border border-stone-200 space-y-4 shadow-xs">
+              <div class="flex items-center justify-between pb-3 border-b border-stone-100">
+                <div class="flex items-center gap-2.5">
+                  <span id="storefront-cat-icon-badge" class="text-2xl p-2 bg-amber-50 rounded-xl border border-amber-200">🌙</span>
+                  <div>
+                    <h3 id="storefront-cat-name-display" class="font-extrabold text-sm text-stone-900">The Crescent Hobo</h3>
+                    <span id="storefront-cat-id-badge" class="text-[10px] font-mono text-stone-500 bg-stone-50 px-1.5 py-0.5 rounded border border-stone-200">ID: CAT-HBO</span>
+                  </div>
+                </div>
+                <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">Active</span>
+              </div>
+
+              <!-- Subcategories Editor -->
+              <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                  <label class="text-xs font-bold text-stone-800 flex items-center gap-1.5">
+                    <span>🏷️</span> Subcategories for this Category:
+                  </label>
+                  <span id="storefront-subcat-count" class="text-[10px] text-stone-500 font-mono">0 items</span>
+                </div>
+                <div id="storefront-subcat-chips" class="flex flex-wrap gap-1.5 min-h-[38px] p-2.5 bg-stone-50 rounded-xl border border-stone-200">
+                  <!-- Chips -->
+                </div>
+                <div class="flex gap-2 pt-1">
+                  <input type="text" id="storefront-new-subcat-input" placeholder="e.g. Traditional Potlis or Bomkai" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 outline-none focus:ring-2 focus:ring-amber-900" onkeydown="if(event.key==='Enter'){event.preventDefault();handleStorefrontAddSubcategory();}">
+                  <button onclick="handleStorefrontAddSubcategory()" class="px-4 py-2 bg-amber-900 hover:bg-amber-950 text-white rounded-xl text-xs font-bold whitespace-nowrap transition shadow-sm">
+                    + Add Subcategory
+                  </button>
+                </div>
+              </div>
+
+              <!-- Sizes Editor -->
+              <div class="space-y-2 pt-3 border-t border-stone-100">
+                <div class="flex justify-between items-center">
+                  <label class="text-xs font-bold text-stone-800 flex items-center gap-1.5">
+                    <span>📐</span> Category Sizes & Dimensions:
+                  </label>
+                  <span id="storefront-size-count" class="text-[10px] text-stone-500 font-mono">0 sizes</span>
+                </div>
+                <p class="text-[11px] text-stone-500">Configure size specifications that belong to this category (e.g. 13.5x13.5 in for bags, 6.3m for sarees, XL for apparel).</p>
+                <div id="storefront-size-chips" class="flex flex-wrap gap-1.5 min-h-[38px] p-2.5 bg-stone-50 rounded-xl border border-stone-200">
+                  <!-- Chips -->
+                </div>
+                <div class="flex gap-2 pt-1">
+                  <input type="text" id="storefront-new-size-input" placeholder="e.g. Standard: 13.5 x 13.5 x 2.5 in or XL (44)" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 outline-none focus:ring-2 focus:ring-amber-900" onkeydown="if(event.key==='Enter'){event.preventDefault();handleStorefrontAddSize();}">
+                  <button onclick="handleStorefrontAddSize()" class="px-4 py-2 bg-amber-900 hover:bg-amber-950 text-white rounded-xl text-xs font-bold whitespace-nowrap transition shadow-sm">
+                    + Add Size
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Right 5 Cols: Create New Category Form -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="bg-amber-50/50 p-5 rounded-2xl border border-amber-200/80 space-y-4">
+            <div>
+              <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-200/60 text-amber-950 mb-1">
+                <span>➕</span> New Catalog Section
+              </div>
+              <h3 class="text-base font-bold text-stone-900">Create New Category</h3>
+              <p class="text-xs text-stone-500">Add a new category with its initial subcategories and sizes.</p>
+            </div>
+
+            <form onsubmit="handleStorefrontCreateCategory(event)" class="space-y-3">
+              <div class="grid grid-cols-3 gap-2">
+                <div class="col-span-2">
+                  <label class="block text-xs font-bold text-stone-700 mb-1">Category Name *</label>
+                  <input type="text" id="storefront-create-cat-name" required placeholder="e.g. Sambalpuri Shawls" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-white focus:ring-2 focus:ring-amber-900 outline-none">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-stone-700 mb-1">Icon *</label>
+                  <input type="text" id="storefront-create-cat-icon" required value="🧣" maxlength="4" class="w-full px-3 py-2 text-xs text-center text-lg border border-stone-200 rounded-xl bg-white focus:ring-2 focus:ring-amber-900 outline-none">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-stone-700 mb-1">Initial Subcategories (comma-separated)</label>
+                <input type="text" id="storefront-create-cat-subs" placeholder="e.g. Wool Bandha, Tussar Silk, Cotton Ikat" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-white focus:ring-2 focus:ring-amber-900 outline-none">
+                <span class="text-[10px] text-stone-400">Comma-separated list of subcategories</span>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-stone-700 mb-1">Initial Sizes / Dimensions (comma-separated)</label>
+                <input type="text" id="storefront-create-cat-sizes" placeholder="e.g. Standard (2m x 1m), Extra Large (2.5m x 1.2m)" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-white focus:ring-2 focus:ring-amber-900 outline-none">
+                <span class="text-[10px] text-stone-400">Sizes applicable to this category</span>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-stone-700 mb-1">Description</label>
+                <textarea id="storefront-create-cat-desc" rows="2" placeholder="Handcrafted Sambalpuri collection description..." class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-white focus:ring-2 focus:ring-amber-900 outline-none"></textarea>
+              </div>
+
+              <button type="submit" class="w-full py-2.5 bg-amber-900 hover:bg-amber-950 text-white rounded-xl text-xs font-bold shadow-md transition flex items-center justify-center gap-2">
+                <span>➕</span> Create Category
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
     </section>
 
     <!-- Footer -->
@@ -538,20 +684,23 @@
       const lockBtn = document.getElementById('admin-lock-btn');
       const costLock = document.getElementById('cost-lock-icon');
       const ordersLock = document.getElementById('orders-lock-icon');
+      const taxLock = document.getElementById('taxonomy-lock-icon');
 
       if (isAuth) {
         if (lockBtn) lockBtn.classList.remove('hidden');
         if (costLock) costLock.innerText = '⚙️';
         if (ordersLock) ordersLock.innerText = '📦';
+        if (taxLock) taxLock.innerText = '🗂️';
       } else {
         if (lockBtn) lockBtn.classList.add('hidden');
         if (costLock) costLock.innerText = '🔒';
         if (ordersLock) ordersLock.innerText = '🔒';
+        if (taxLock) taxLock.innerText = '🔒';
       }
     }
 
     function switchTab(tabId) {
-      if (tabId === 'cost' || tabId === 'orders') {
+      if (tabId === 'cost' || tabId === 'orders' || tabId === 'taxonomy') {
         if (!isAdminAuthenticated()) {
           pendingAdminTab = tabId;
           openAdminAuthModal();
@@ -562,18 +711,28 @@
       document.getElementById('tab-store').classList.add('hidden');
       document.getElementById('tab-cost').classList.add('hidden');
       document.getElementById('tab-orders').classList.add('hidden');
+      document.getElementById('tab-taxonomy').classList.add('hidden');
 
-      const tabs = ['store', 'cost', 'orders'];
+      const tabs = ['store', 'cost', 'orders', 'taxonomy'];
       tabs.forEach(t => {
         const btn = document.getElementById(`tab-btn-${t}`);
-        btn.classList.remove('bg-amber-900', 'text-white', 'shadow-sm');
-        btn.classList.add('text-stone-600');
+        if (btn) {
+          btn.classList.remove('bg-amber-900', 'text-white', 'shadow-sm');
+          btn.classList.add('text-stone-600');
+        }
       });
 
       document.getElementById(`tab-${tabId}`).classList.remove('hidden');
       const activeBtn = document.getElementById(`tab-btn-${tabId}`);
-      activeBtn.classList.remove('text-stone-600');
-      activeBtn.classList.add('bg-amber-900', 'text-white', 'shadow-sm');
+      if (activeBtn) {
+        activeBtn.classList.remove('text-stone-600');
+        activeBtn.classList.add('bg-amber-900', 'text-white', 'shadow-sm');
+      }
+
+      if (tabId === 'taxonomy') {
+        renderStorefrontTaxonomyDropdowns();
+        renderStorefrontCategoryDetails();
+      }
     }
 
     function openAdminAuthModal() {
@@ -884,11 +1043,290 @@
       }
     }
 
+    // ====================================================================
+    // STOREFRONT TAXONOMY (CATEGORIES, SUBCATEGORIES, SIZES)
+    // ====================================================================
+    const DEFAULT_STOREFRONT_TAXONOMY = [
+      {
+        id: "CAT-HBO",
+        name: "The Crescent Hobo",
+        icon: "🌙",
+        subcategories: ["Heritage Bandha", "Passapalli Weave", "Floral & Nature Ikat", "Temple & Chakra"],
+        sizes: ["Standard (13.5 x 13.5 x 2.5 in)", "Small (12 x 12 in)", "Extra Large (15 x 15 in)"],
+        desc: "Ergonomic crescent hobo bags crafted in authentic Sambalpuri handloom cotton bandha"
+      },
+      {
+        id: "CAT-OTH",
+        name: "In Other Bags",
+        icon: "👜",
+        subcategories: ["Backpacks", "Mobile Pouches", "Traditional Potlis", "Tote Bags", "Sling Bags", "Laptop Bags"],
+        sizes: ["Backpack (15 x 12 x 5 in)", "Mobile Sling (7.5 x 4.5 x 1.5 in)", "Potli (9 x 8 in)", "Tote (14 x 13 x 4 in)", "Laptop Sleeve (15.5 x 11 in)"],
+        desc: "Versatile collection of daily handloom backpacks, sling bags, festive potlis, and totes"
+      },
+      {
+        id: "CAT-SAR",
+        name: "Sambalpuri Sarees",
+        icon: "🥻",
+        subcategories: ["Passapalli", "Bomkai", "Bichitrapuri", "Tissue Silk", "Pure Cotton Bandha", "Barpali Weave"],
+        sizes: ["Standard 6.3m (with blouse piece)", "5.5m (without blouse piece)"],
+        desc: "Timeless handwoven Odisha Sambalpuri sarees in silk and cotton with intricate aanchal"
+      },
+      {
+        id: "CAT-APP",
+        name: "Kurtas & Apparel",
+        icon: "👗",
+        subcategories: ["Men Kurta", "Women Kurti", "Short Kurta", "Dupattas & Shawls", "Stoles"],
+        sizes: ["S (38)", "M (40)", "L (42)", "XL (44)", "XXL (46)", "Free Size"],
+        desc: "Handcrafted Sambalpuri ikat kurtas, ethnic shirts, and traditional stoles"
+      },
+      {
+        id: "CAT-HOM",
+        name: "Home & Living",
+        icon: "🏠",
+        subcategories: ["Bedcovers", "Cushion Covers", "Table Runners", "Wall Hangings", "Curtains"],
+        sizes: ["Single (60 x 90 in)", "Double / Queen (90 x 100 in)", "King (108 x 108 in)", "Cushion (16 x 16 in)", "Runner (14 x 48 in)"],
+        desc: "Authentic handloom tapestries, decorative cushions, and handwoven dining runners"
+      }
+    ];
+
+    function getStorefrontTaxonomy() {
+      const saved = localStorage.getItem('sambalke_admin_taxonomy');
+      if (saved) {
+        try { return JSON.parse(saved); } catch(e){}
+      }
+      return DEFAULT_STOREFRONT_TAXONOMY;
+    }
+
+    function saveStorefrontTaxonomy(tax) {
+      localStorage.setItem('sambalke_admin_taxonomy', JSON.stringify(tax));
+      renderStorefrontTaxonomyDropdowns();
+      renderStorefrontCategoryDetails();
+    }
+
+    function renderStorefrontTaxonomyDropdowns() {
+      const select = document.getElementById('storefront-manage-cat-select');
+      if (!select) return;
+      const tax = getStorefrontTaxonomy();
+      const cur = select.value;
+
+      select.innerHTML = tax.map(c => `
+        <option value="${c.id}">${c.icon} ${c.name} (${c.subcategories ? c.subcategories.length : 0} subcats, ${c.sizes ? c.sizes.length : 0} sizes)</option>
+      `).join('');
+
+      if (cur && tax.some(c => c.id === cur)) {
+        select.value = cur;
+      } else if (tax.length > 0) {
+        select.value = tax[0].id;
+      }
+    }
+
+    function renderStorefrontCategoryDetails() {
+      const select = document.getElementById('storefront-manage-cat-select');
+      if (!select || !select.value) return;
+      const tax = getStorefrontTaxonomy();
+      const cat = tax.find(c => c.id === select.value) || tax[0];
+      if (!cat) return;
+
+      document.getElementById('storefront-cat-icon-badge').innerText = cat.icon || '🏷️';
+      document.getElementById('storefront-cat-name-display').innerText = cat.name;
+      document.getElementById('storefront-cat-id-badge').innerText = `ID: ${cat.id}`;
+
+      // Subcategories
+      const subContainer = document.getElementById('storefront-subcat-chips');
+      const subCount = document.getElementById('storefront-subcat-count');
+      const subs = cat.subcategories || [];
+      subCount.innerText = `${subs.length} items`;
+
+      if (subs.length === 0) {
+        subContainer.innerHTML = `<span class="text-xs text-stone-400 italic">No subcategories defined. Add one below!</span>`;
+      } else {
+        subContainer.innerHTML = subs.map(s => `
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-100 text-amber-950 border border-amber-200">
+            <span>${s}</span>
+            <button onclick="handleStorefrontDeleteSubcategory('${s.replace(/'/g, "\\'")}')" class="text-amber-800 hover:text-rose-700 font-bold ml-1 text-sm leading-none">&times;</button>
+          </span>
+        `).join('');
+      }
+
+      // Sizes
+      const sizeContainer = document.getElementById('storefront-size-chips');
+      const sizeCount = document.getElementById('storefront-size-count');
+      const sizes = cat.sizes || [];
+      sizeCount.innerText = `${sizes.length} sizes`;
+
+      if (sizes.length === 0) {
+        sizeContainer.innerHTML = `<span class="text-xs text-stone-400 italic">No sizes defined. Add one below!</span>`;
+      } else {
+        sizeContainer.innerHTML = sizes.map(sz => `
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-medium bg-white text-stone-800 border border-stone-200 shadow-xs">
+            <span>📐 ${sz}</span>
+            <button onclick="handleStorefrontDeleteSize('${sz.replace(/'/g, "\\'")}')" class="text-stone-400 hover:text-rose-700 font-bold ml-1 text-sm leading-none">&times;</button>
+          </span>
+        `).join('');
+      }
+    }
+
+    function handleStorefrontCreateCategory(e) {
+      e.preventDefault();
+      const name = document.getElementById('storefront-create-cat-name').value.trim();
+      const icon = document.getElementById('storefront-create-cat-icon').value.trim() || '🏷️';
+      const subRaw = document.getElementById('storefront-create-cat-subs').value.trim();
+      const sizeRaw = document.getElementById('storefront-create-cat-sizes').value.trim();
+      const desc = document.getElementById('storefront-create-cat-desc').value.trim();
+
+      if (!name) return;
+
+      const tax = getStorefrontTaxonomy();
+      if (tax.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+        alert(`Category "${name}" already exists!`);
+        return;
+      }
+
+      const cleanCode = name.replace(/[^a-zA-Z]/g, '').slice(0, 3).toUpperCase() || 'CAT';
+      const newId = `CAT-${cleanCode}-${Date.now().toString().slice(-3)}`;
+
+      const subcategories = subRaw ? subRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+      const sizes = sizeRaw ? sizeRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+      const newCategory = {
+        id: newId,
+        name,
+        icon,
+        subcategories,
+        sizes,
+        desc: desc || `${name} handcrafted Sambalpuri collection`
+      };
+
+      tax.push(newCategory);
+      saveStorefrontTaxonomy(tax);
+
+      document.getElementById('storefront-create-cat-name').value = '';
+      document.getElementById('storefront-create-cat-subs').value = '';
+      document.getElementById('storefront-create-cat-sizes').value = '';
+      document.getElementById('storefront-create-cat-desc').value = '';
+      document.getElementById('storefront-manage-cat-select').value = newId;
+      renderStorefrontCategoryDetails();
+      alert(`Category "${name}" created with ID: ${newId}!`);
+    }
+
+    function handleStorefrontAddSubcategory() {
+      const input = document.getElementById('storefront-new-subcat-input');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const selCatId = document.getElementById('storefront-manage-cat-select').value;
+      const tax = getStorefrontTaxonomy();
+      const cat = tax.find(c => c.id === selCatId);
+      if (!cat) return;
+
+      if (!cat.subcategories) cat.subcategories = [];
+      if (cat.subcategories.some(s => s.toLowerCase() === val.toLowerCase())) {
+        alert(`Subcategory "${val}" already exists in ${cat.name}!`);
+        return;
+      }
+
+      cat.subcategories.push(val);
+      saveStorefrontTaxonomy(tax);
+      input.value = '';
+      renderStorefrontCategoryDetails();
+    }
+
+    function handleStorefrontDeleteSubcategory(subcat) {
+      const selCatId = document.getElementById('storefront-manage-cat-select').value;
+      const tax = getStorefrontTaxonomy();
+      const cat = tax.find(c => c.id === selCatId);
+      if (!cat || !cat.subcategories) return;
+
+      if (confirm(`Remove subcategory "${subcat}" from ${cat.name}?`)) {
+        cat.subcategories = cat.subcategories.filter(s => s !== subcat);
+        saveStorefrontTaxonomy(tax);
+        renderStorefrontCategoryDetails();
+      }
+    }
+
+    function handleStorefrontAddSize() {
+      const input = document.getElementById('storefront-new-size-input');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const selCatId = document.getElementById('storefront-manage-cat-select').value;
+      const tax = getStorefrontTaxonomy();
+      const cat = tax.find(c => c.id === selCatId);
+      if (!cat) return;
+
+      if (!cat.sizes) cat.sizes = [];
+      if (cat.sizes.includes(val)) {
+        alert(`Size "${val}" already exists in ${cat.name}!`);
+        return;
+      }
+
+      cat.sizes.push(val);
+      saveStorefrontTaxonomy(tax);
+      input.value = '';
+      renderStorefrontCategoryDetails();
+    }
+
+    function handleStorefrontDeleteSize(sz) {
+      const selCatId = document.getElementById('storefront-manage-cat-select').value;
+      const tax = getStorefrontTaxonomy();
+      const cat = tax.find(c => c.id === selCatId);
+      if (!cat || !cat.sizes) return;
+
+      if (confirm(`Remove size "${sz}" from ${cat.name}?`)) {
+        cat.sizes = cat.sizes.filter(s => s !== sz);
+        saveStorefrontTaxonomy(tax);
+        renderStorefrontCategoryDetails();
+      }
+    }
+
+    function handleStorefrontDeleteCategory() {
+      const selCatId = document.getElementById('storefront-manage-cat-select').value;
+      const tax = getStorefrontTaxonomy();
+      const cat = tax.find(c => c.id === selCatId);
+      if (!cat) return;
+
+      if (tax.length <= 1) {
+        alert("You must keep at least one category.");
+        return;
+      }
+
+      if (confirm(`Delete category "${cat.name}" (${cat.id})?`)) {
+        const updated = tax.filter(c => c.id !== selCatId);
+        saveStorefrontTaxonomy(updated);
+        document.getElementById('storefront-manage-cat-select').value = updated[0].id;
+        renderStorefrontCategoryDetails();
+        alert(`Category "${cat.name}" deleted.`);
+      }
+    }
+
+    function exportTaxonomyCSVStorefront() {
+      const tax = getStorefrontTaxonomy();
+      const headers = ["Category_ID", "Category_Name", "Icon", "Subcategories", "Available_Sizes", "Description", "Status"];
+      const rows = tax.map(c => [
+        c.id,
+        `"${c.name.replace(/"/g, '""')}"`,
+        `"${c.icon || ''}"`,
+        `"${(c.subcategories || []).join(';')}"`,
+        `"${(c.sizes || []).join(';')}"`,
+        `"${(c.desc || '').replace(/"/g, '""')}"`,
+        "ACTIVE"
+      ]);
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `sambalke_categories_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
     // Init
     updateAdminLockUI();
     calculateCosts();
     renderOrders();
     updateOrderSummary();
+    renderStorefrontTaxonomyDropdowns();
   </script>
 </body>
 </html>

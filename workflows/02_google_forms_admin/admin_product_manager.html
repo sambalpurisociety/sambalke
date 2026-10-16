@@ -75,6 +75,9 @@
         <button onclick="toggleAddModal(true)" class="px-4 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1.5">
           <span>➕</span> Add New Product
         </button>
+        <button onclick="openCategoryManagerModal()" class="px-3.5 py-2 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-xl text-xs font-bold transition border border-amber-300 flex items-center gap-1.5 shadow-sm">
+          <span>🗂️</span> Categories & Sizes
+        </button>
         <button onclick="openChangePasswordModal()" class="px-3 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl text-xs font-semibold transition border border-stone-200 flex items-center gap-1">
           <span>🔑</span> Change Password
         </button>
@@ -177,28 +180,43 @@
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-bold text-stone-700 mb-1">Category *</label>
-            <select id="prod-category" required class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
-              <option value="Crescent Hobo">Crescent Hobo Collection</option>
-              <option value="Other Bags">In Other Bags</option>
-              <option value="Sarees">Sarees</option>
-              <option value="Kurtas">Kurtas & Apparel</option>
-              <option value="Home Decor">Home Decor</option>
+            <select id="prod-category" required onchange="handleProductCategoryChange()" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+              <!-- Dynamically populated from taxonomy -->
             </select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">Price in Rupees (₹) *</label>
-            <input type="number" id="prod-price" required min="1" step="1" placeholder="e.g. 1699" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+            <label class="block text-xs font-bold text-stone-700 mb-1">Subcategory</label>
+            <select id="prod-subcategory" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+              <!-- Dynamically populated based on chosen category -->
+            </select>
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Price in Rupees (₹) *</label>
+            <input type="number" id="prod-price" required min="1" step="1" placeholder="e.g. 1699" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+          </div>
+          <div>
             <label class="block text-xs font-bold text-stone-700 mb-1">Fabric / Weave Type</label>
             <input type="text" id="prod-fabric" placeholder="e.g. Sambalpuri Cotton Bandha" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
           </div>
+        </div>
+
+        <!-- Category Defined Sizes Picker -->
+        <div class="space-y-1.5 bg-amber-50/60 p-3 rounded-xl border border-amber-200/70">
+          <div class="flex justify-between items-center">
+            <label class="block text-xs font-bold text-stone-800 flex items-center gap-1">
+              <span>📐</span> Available Sizes for this Category:
+            </label>
+            <span class="text-[10px] text-amber-900 font-semibold">Click a size to apply</span>
+          </div>
+          <div id="product-modal-size-chips" class="flex flex-wrap gap-1.5 min-h-[28px]">
+            <!-- Dynamically populated from category sizes -->
+          </div>
           <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">Dimensions</label>
-            <input type="text" id="prod-sizes" placeholder="13.5 x 13.5 x 2.5 in" value="13.5 x 13.5 x 2.5 in (Belt: 21.5 in)" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+            <label class="block text-[10px] font-bold text-stone-500 mb-0.5">Selected Dimensions / Size Spec *</label>
+            <input type="text" id="prod-sizes" required placeholder="Choose a size above or enter custom dimensions" class="w-full px-3 py-1.5 text-xs border border-stone-200 rounded-lg bg-white focus:ring-2 focus:ring-amber-800 outline-none font-mono">
           </div>
         </div>
 
@@ -223,6 +241,162 @@
           <button type="submit" class="px-5 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold shadow-sm">Save Product</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: CATEGORIES & SIZES MANAGER
+       ==================================================================== -->
+  <div id="category-manager-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-2xl rounded-2xl p-6 shadow-2xl border border-stone-200 max-h-[90vh] overflow-y-auto space-y-4">
+      <div class="flex justify-between items-center border-b border-stone-100 pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl p-1.5 bg-amber-100 text-amber-900 rounded-xl border border-amber-200">🗂️</span>
+          <div>
+            <h3 class="text-base font-bold text-stone-900">Category, Subcategory & Size Manager</h3>
+            <p class="text-[11px] text-stone-500">Create new categories, add subcategories, and define sizes for each category.</p>
+          </div>
+        </div>
+        <button onclick="closeCategoryManagerModal()" class="text-stone-400 hover:text-stone-600 font-bold text-2xl">&times;</button>
+      </div>
+
+      <!-- Navigation Tabs inside Category Manager -->
+      <div class="flex border-b border-stone-200 gap-2">
+        <button id="cat-tab-btn-manage" onclick="switchCategoryModalTab('manage')" class="pb-2 px-3 text-xs font-bold border-b-2 border-amber-800 text-amber-900 flex items-center gap-1.5">
+          <span>⚙️</span> Manage Categories & Sizes
+        </button>
+        <button id="cat-tab-btn-create" onclick="switchCategoryModalTab('create')" class="pb-2 px-3 text-xs font-semibold text-stone-500 hover:text-stone-800 flex items-center gap-1.5">
+          <span>➕</span> Create New Category
+        </button>
+      </div>
+
+      <!-- TAB 1: MANAGE EXISTING CATEGORY (Subcategories & Sizes) -->
+      <div id="cat-tab-manage" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Select Category to Manage:</label>
+          <div class="flex gap-2">
+            <select id="manage-category-select" onchange="renderSelectedCategoryDetails()" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 font-bold text-stone-900 outline-none focus:ring-2 focus:ring-amber-800">
+              <!-- Dynamically populated -->
+            </select>
+            <button onclick="handleDeleteSelectedCategory()" class="px-3 py-2 text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 rounded-xl whitespace-nowrap transition">
+              🗑️ Delete Category
+            </button>
+          </div>
+        </div>
+
+        <!-- Category Details & Manage Sections -->
+        <div id="selected-category-details" class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-4">
+          
+          <!-- Category Header Info -->
+          <div class="flex items-center justify-between pb-3 border-b border-stone-200">
+            <div class="flex items-center gap-2.5">
+              <span id="selected-cat-icon-badge" class="text-2xl p-2 bg-white rounded-xl border border-stone-200 shadow-sm">🌙</span>
+              <div>
+                <h4 id="selected-cat-name-display" class="font-extrabold text-sm text-stone-900">The Crescent Hobo</h4>
+                <span id="selected-cat-id-badge" class="text-[10px] font-mono text-stone-500 bg-white px-1.5 py-0.5 rounded border border-stone-200">ID: CAT-HBO</span>
+              </div>
+            </div>
+            <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">Active Category</span>
+          </div>
+
+          <!-- Subcategories Section -->
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <label class="text-xs font-bold text-stone-800 flex items-center gap-1.5">
+                <span>🏷️</span> Subcategories in this Category
+              </label>
+              <span id="subcategory-count-badge" class="text-[10px] text-stone-500 font-mono">0 items</span>
+            </div>
+
+            <div id="subcategories-chips-container" class="flex flex-wrap gap-1.5 min-h-[38px] p-2.5 bg-white rounded-xl border border-stone-200">
+              <!-- Dynamically rendered subcategory chips with 'x' to remove -->
+            </div>
+
+            <!-- Add Subcategory Form -->
+            <div class="flex gap-2 pt-1">
+              <input type="text" id="new-subcategory-input" placeholder="e.g. Traditional Potlis or Bomkai Weave" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-amber-800" onkeydown="if(event.key==='Enter'){event.preventDefault();handleAddSubcategory();}">
+              <button onclick="handleAddSubcategory()" class="px-4 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold whitespace-nowrap transition shadow-sm">
+                + Add Subcategory
+              </button>
+            </div>
+          </div>
+
+          <!-- Sizes / Dimensions Section -->
+          <div class="space-y-2 pt-2 border-t border-stone-200">
+            <div class="flex justify-between items-center">
+              <label class="text-xs font-bold text-stone-800 flex items-center gap-1.5">
+                <span>📐</span> Sizes & Dimensions for this Category
+              </label>
+              <span id="size-count-badge" class="text-[10px] text-stone-500 font-mono">0 sizes</span>
+            </div>
+            <p class="text-[11px] text-stone-500">Admins can define category-specific sizes (e.g. 13.5x13.5 in for bags, 6.3m for sarees, S (38) / M (40) for apparel).</p>
+
+            <div id="sizes-chips-container" class="flex flex-wrap gap-1.5 min-h-[38px] p-2.5 bg-white rounded-xl border border-stone-200">
+              <!-- Dynamically rendered size chips with 'x' to remove -->
+            </div>
+
+            <!-- Add Size Form -->
+            <div class="flex gap-2 pt-1">
+              <input type="text" id="new-size-input" placeholder="e.g. Standard: 13.5 x 13.5 x 2.5 in or XL (44)" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-amber-800" onkeydown="if(event.key==='Enter'){event.preventDefault();handleAddSize();}">
+              <button onclick="handleAddSize()" class="px-4 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold whitespace-nowrap transition shadow-sm">
+                + Add Size
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 2: CREATE NEW CATEGORY -->
+      <div id="cat-tab-create" class="hidden space-y-3">
+        <form id="create-category-form" onsubmit="handleCreateCategory(event)" class="space-y-3">
+          <div class="grid grid-cols-3 gap-3">
+            <div class="col-span-2">
+              <label class="block text-xs font-bold text-stone-700 mb-1">Category Name *</label>
+              <input type="text" id="new-cat-name" required placeholder="e.g. Dupattas & Stoles or Brass Artifacts" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1">Emoji / Icon *</label>
+              <input type="text" id="new-cat-icon" required value="✨" maxlength="4" class="w-full px-3 py-2 text-xs text-center text-lg border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Initial Subcategories (comma-separated)</label>
+            <input type="text" id="new-cat-subcategories" placeholder="e.g. Silk Zari, Cotton Bandha, Tussar Ikat" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+            <span class="text-[10px] text-stone-400">Separate multiple subcategories with commas</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Initial Sizes / Dimensions for this Category (comma-separated)</label>
+            <input type="text" id="new-cat-sizes" placeholder="e.g. Standard (2.5m x 36 in), Short Stole (2m x 24 in)" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none">
+            <span class="text-[10px] text-stone-400">Define the sizes applicable to products in this category</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Description</label>
+            <textarea id="new-cat-desc" rows="2" placeholder="Description of this category for the catalog..." class="w-full px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50 focus:ring-2 focus:ring-amber-800 outline-none"></textarea>
+          </div>
+
+          <div class="pt-2 flex justify-end gap-2">
+            <button type="button" onclick="switchCategoryModalTab('manage')" class="px-4 py-2 border border-stone-200 rounded-xl text-xs font-semibold text-stone-600">Cancel</button>
+            <button type="submit" class="px-5 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold shadow-sm">
+              Create Category
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Sync & Export Footer -->
+      <div class="pt-3 border-t border-stone-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+        <button onclick="exportTaxonomyCSV()" class="text-stone-600 hover:text-stone-900 font-semibold flex items-center gap-1.5 border border-stone-200 px-3 py-1.5 rounded-lg bg-stone-50">
+          📥 Download Categories Schema CSV
+        </button>
+        <button onclick="resetTaxonomyToDefaults()" class="text-stone-400 hover:text-rose-600 text-[11px] underline">
+          Reset to Default Taxonomy
+        </button>
+      </div>
+
     </div>
   </div>
 
@@ -327,18 +501,403 @@
       closeChangePasswordModal();
     }
 
+    // Taxonomy & Categories State
+    const DEFAULT_TAXONOMY = [
+      {
+        id: "CAT-HBO",
+        name: "The Crescent Hobo",
+        icon: "🌙",
+        subcategories: ["Heritage Bandha", "Passapalli Weave", "Floral & Nature Ikat", "Temple & Chakra"],
+        sizes: ["Standard (13.5 x 13.5 x 2.5 in)", "Small (12 x 12 in)", "Extra Large (15 x 15 in)"],
+        desc: "Ergonomic crescent hobo bags crafted in authentic Sambalpuri handloom cotton bandha"
+      },
+      {
+        id: "CAT-OTH",
+        name: "In Other Bags",
+        icon: "👜",
+        subcategories: ["Backpacks", "Mobile Pouches", "Traditional Potlis", "Tote Bags", "Sling Bags", "Laptop Bags"],
+        sizes: ["Backpack (15 x 12 x 5 in)", "Mobile Sling (7.5 x 4.5 x 1.5 in)", "Potli (9 x 8 in)", "Tote (14 x 13 x 4 in)", "Laptop Sleeve (15.5 x 11 in)"],
+        desc: "Versatile collection of daily handloom backpacks, sling bags, festive potlis, and totes"
+      },
+      {
+        id: "CAT-SAR",
+        name: "Sambalpuri Sarees",
+        icon: "🥻",
+        subcategories: ["Passapalli", "Bomkai", "Bichitrapuri", "Tissue Silk", "Pure Cotton Bandha", "Barpali Weave"],
+        sizes: ["Standard 6.3m (with blouse piece)", "5.5m (without blouse piece)"],
+        desc: "Timeless handwoven Odisha Sambalpuri sarees in silk and cotton with intricate aanchal"
+      },
+      {
+        id: "CAT-APP",
+        name: "Kurtas & Apparel",
+        icon: "👗",
+        subcategories: ["Men Kurta", "Women Kurti", "Short Kurta", "Dupattas & Shawls", "Stoles"],
+        sizes: ["S (38)", "M (40)", "L (42)", "XL (44)", "XXL (46)", "Free Size"],
+        desc: "Handcrafted Sambalpuri ikat kurtas, ethnic shirts, and traditional stoles"
+      },
+      {
+        id: "CAT-HOM",
+        name: "Home & Living",
+        icon: "🏠",
+        subcategories: ["Bedcovers", "Cushion Covers", "Table Runners", "Wall Hangings", "Curtains"],
+        sizes: ["Single (60 x 90 in)", "Double / Queen (90 x 100 in)", "King (108 x 108 in)", "Cushion (16 x 16 in)", "Runner (14 x 48 in)"],
+        desc: "Authentic handloom tapestries, decorative cushions, and handwoven dining runners"
+      }
+    ];
+
+    let taxonomy = getTaxonomy();
+
+    function getTaxonomy() {
+      const saved = localStorage.getItem('sambalke_admin_taxonomy');
+      if (saved) {
+        try { return JSON.parse(saved); } catch(e){}
+      }
+      return DEFAULT_TAXONOMY;
+    }
+
+    function saveTaxonomyLocally(updated) {
+      taxonomy = updated;
+      localStorage.setItem('sambalke_admin_taxonomy', JSON.stringify(taxonomy));
+      renderTaxonomyDropdowns();
+      renderSelectedCategoryDetails();
+      renderProductsTable();
+    }
+
+    function resetTaxonomyToDefaults() {
+      if (confirm("Reset all categories, subcategories, and sizes to default state?")) {
+        saveTaxonomyLocally(DEFAULT_TAXONOMY);
+        alert("Categories reset to default!");
+      }
+    }
+
+    // Modal Control: Category Manager
+    function openCategoryManagerModal() {
+      renderTaxonomyDropdowns();
+      renderSelectedCategoryDetails();
+      document.getElementById('category-manager-modal').classList.remove('hidden');
+    }
+
+    function closeCategoryManagerModal() {
+      document.getElementById('category-manager-modal').classList.add('hidden');
+    }
+
+    function switchCategoryModalTab(tab) {
+      const manageBtn = document.getElementById('cat-tab-btn-manage');
+      const createBtn = document.getElementById('cat-tab-btn-create');
+      const managePane = document.getElementById('cat-tab-manage');
+      const createPane = document.getElementById('cat-tab-create');
+
+      if (tab === 'manage') {
+        manageBtn.className = "pb-2 px-3 text-xs font-bold border-b-2 border-amber-800 text-amber-900 flex items-center gap-1.5";
+        createBtn.className = "pb-2 px-3 text-xs font-semibold text-stone-500 hover:text-stone-800 flex items-center gap-1.5";
+        managePane.classList.remove('hidden');
+        createPane.classList.add('hidden');
+        renderSelectedCategoryDetails();
+      } else {
+        createBtn.className = "pb-2 px-3 text-xs font-bold border-b-2 border-amber-800 text-amber-900 flex items-center gap-1.5";
+        manageBtn.className = "pb-2 px-3 text-xs font-semibold text-stone-500 hover:text-stone-800 flex items-center gap-1.5";
+        createPane.classList.remove('hidden');
+        managePane.classList.add('hidden');
+      }
+    }
+
+    // Render Dropdowns for Category Manager & Forms
+    function renderTaxonomyDropdowns() {
+      // 1. Manage select in Category Modal
+      const manageSelect = document.getElementById('manage-category-select');
+      if (manageSelect) {
+        const curVal = manageSelect.value;
+        manageSelect.innerHTML = taxonomy.map(c => `
+          <option value="${c.id}">${c.icon} ${c.name} (${c.subcategories ? c.subcategories.length : 0} subs, ${c.sizes ? c.sizes.length : 0} sizes)</option>
+        `).join('');
+        if (curVal && taxonomy.some(c => c.id === curVal)) {
+          manageSelect.value = curVal;
+        } else if (taxonomy.length > 0) {
+          manageSelect.value = taxonomy[0].id;
+        }
+      }
+
+      // 2. Product Form Category Select
+      const prodCatSelect = document.getElementById('prod-category');
+      if (prodCatSelect) {
+        const currentSelected = prodCatSelect.value;
+        prodCatSelect.innerHTML = taxonomy.map(c => `
+          <option value="${c.name}">${c.icon} ${c.name}</option>
+        `).join('');
+        if (currentSelected && taxonomy.some(c => c.name === currentSelected)) {
+          prodCatSelect.value = currentSelected;
+        }
+        handleProductCategoryChange();
+      }
+
+      // 3. Table Filter Category
+      const filterSelect = document.getElementById('filter-category');
+      if (filterSelect) {
+        const curFilter = filterSelect.value;
+        filterSelect.innerHTML = `
+          <option value="ALL">All Categories (${catalog.length})</option>
+          ${taxonomy.map(c => `<option value="${c.name}">${c.icon} ${c.name}</option>`).join('')}
+        `;
+        if (curFilter) filterSelect.value = curFilter;
+      }
+    }
+
+    // Render details for the currently selected category in Category Manager
+    function renderSelectedCategoryDetails() {
+      const select = document.getElementById('manage-category-select');
+      if (!select || !select.value) return;
+      const cat = taxonomy.find(c => c.id === select.value) || taxonomy[0];
+      if (!cat) return;
+
+      document.getElementById('selected-cat-icon-badge').innerText = cat.icon || '🏷️';
+      document.getElementById('selected-cat-name-display').innerText = cat.name;
+      document.getElementById('selected-cat-id-badge').innerText = `ID: ${cat.id}`;
+
+      // Render Subcategories
+      const subContainer = document.getElementById('subcategories-chips-container');
+      const subCount = document.getElementById('subcategory-count-badge');
+      const subs = cat.subcategories || [];
+      subCount.innerText = `${subs.length} items`;
+
+      if (subs.length === 0) {
+        subContainer.innerHTML = `<span class="text-xs text-stone-400 italic">No subcategories defined yet. Add one below!</span>`;
+      } else {
+        subContainer.innerHTML = subs.map(s => `
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-50 text-amber-900 border border-amber-200">
+            <span>${s}</span>
+            <button onclick="handleDeleteSubcategory('${s.replace(/'/g, "\\'")}')" class="text-amber-800 hover:text-rose-700 font-bold ml-1 text-sm leading-none">&times;</button>
+          </span>
+        `).join('');
+      }
+
+      // Render Sizes
+      const sizeContainer = document.getElementById('sizes-chips-container');
+      const sizeCount = document.getElementById('size-count-badge');
+      const sizes = cat.sizes || [];
+      sizeCount.innerText = `${sizes.length} sizes`;
+
+      if (sizes.length === 0) {
+        sizeContainer.innerHTML = `<span class="text-xs text-stone-400 italic">No sizes defined for this category yet. Add sizes below!</span>`;
+      } else {
+        sizeContainer.innerHTML = sizes.map(sz => `
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-medium bg-stone-100 text-stone-800 border border-stone-200">
+            <span>📐 ${sz}</span>
+            <button onclick="handleDeleteSize('${sz.replace(/'/g, "\\'")}')" class="text-stone-400 hover:text-rose-700 font-bold ml-1 text-sm leading-none">&times;</button>
+          </span>
+        `).join('');
+      }
+    }
+
+    // 1. Create New Category
+    function handleCreateCategory(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-cat-name').value.trim();
+      const icon = document.getElementById('new-cat-icon').value.trim() || '🏷️';
+      const subRaw = document.getElementById('new-cat-subcategories').value.trim();
+      const sizesRaw = document.getElementById('new-cat-sizes').value.trim();
+      const desc = document.getElementById('new-cat-desc').value.trim();
+
+      if (!name) return;
+
+      // Check duplicate
+      if (taxonomy.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+        alert(`A category named "${name}" already exists!`);
+        return;
+      }
+
+      // Generate Clean Category ID
+      const cleanCode = name.replace(/[^a-zA-Z]/g, '').slice(0, 3).toUpperCase() || 'CAT';
+      const newId = `CAT-${cleanCode}-${Date.now().toString().slice(-3)}`;
+
+      const subcategories = subRaw ? subRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+      const sizes = sizesRaw ? sizesRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+      const newCategory = {
+        id: newId,
+        name,
+        icon,
+        subcategories,
+        sizes,
+        desc: desc || `${name} handcrafted Sambalpuri collection`
+      };
+
+      taxonomy.push(newCategory);
+      saveTaxonomyLocally(taxonomy);
+
+      document.getElementById('create-category-form').reset();
+      document.getElementById('new-cat-icon').value = "✨";
+      switchCategoryModalTab('manage');
+      document.getElementById('manage-category-select').value = newId;
+      renderSelectedCategoryDetails();
+      alert(`Category "${name}" created successfully with ID: ${newId}!`);
+    }
+
+    // 2. Add Subcategory
+    function handleAddSubcategory() {
+      const input = document.getElementById('new-subcategory-input');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const selCatId = document.getElementById('manage-category-select').value;
+      const cat = taxonomy.find(c => c.id === selCatId);
+      if (!cat) return;
+
+      if (!cat.subcategories) cat.subcategories = [];
+      if (cat.subcategories.some(s => s.toLowerCase() === val.toLowerCase())) {
+        alert(`Subcategory "${val}" already exists in ${cat.name}!`);
+        return;
+      }
+
+      cat.subcategories.push(val);
+      saveTaxonomyLocally(taxonomy);
+      input.value = "";
+      renderSelectedCategoryDetails();
+    }
+
+    // 3. Delete Subcategory
+    function handleDeleteSubcategory(subcat) {
+      const selCatId = document.getElementById('manage-category-select').value;
+      const cat = taxonomy.find(c => c.id === selCatId);
+      if (!cat || !cat.subcategories) return;
+
+      if (confirm(`Remove subcategory "${subcat}" from ${cat.name}?`)) {
+        cat.subcategories = cat.subcategories.filter(s => s !== subcat);
+        saveTaxonomyLocally(taxonomy);
+        renderSelectedCategoryDetails();
+      }
+    }
+
+    // 4. Add Size to Selected Category
+    function handleAddSize() {
+      const input = document.getElementById('new-size-input');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const selCatId = document.getElementById('manage-category-select').value;
+      const cat = taxonomy.find(c => c.id === selCatId);
+      if (!cat) return;
+
+      if (!cat.sizes) cat.sizes = [];
+      if (cat.sizes.includes(val)) {
+        alert(`Size "${val}" is already added to ${cat.name}!`);
+        return;
+      }
+
+      cat.sizes.push(val);
+      saveTaxonomyLocally(taxonomy);
+      input.value = "";
+      renderSelectedCategoryDetails();
+    }
+
+    // 5. Delete Size from Selected Category
+    function handleDeleteSize(sz) {
+      const selCatId = document.getElementById('manage-category-select').value;
+      const cat = taxonomy.find(c => c.id === selCatId);
+      if (!cat || !cat.sizes) return;
+
+      if (confirm(`Remove size "${sz}" from ${cat.name}?`)) {
+        cat.sizes = cat.sizes.filter(s => s !== sz);
+        saveTaxonomyLocally(taxonomy);
+        renderSelectedCategoryDetails();
+      }
+    }
+
+    // 6. Delete Category
+    function handleDeleteSelectedCategory() {
+      const selCatId = document.getElementById('manage-category-select').value;
+      const cat = taxonomy.find(c => c.id === selCatId);
+      if (!cat) return;
+
+      if (taxonomy.length <= 1) {
+        alert("You must keep at least one category in the catalog.");
+        return;
+      }
+
+      if (confirm(`Are you sure you want to delete category "${cat.name}" (${cat.id})? This will remove its subcategories and sizes.`)) {
+        taxonomy = taxonomy.filter(c => c.id !== selCatId);
+        saveTaxonomyLocally(taxonomy);
+        if (taxonomy.length > 0) {
+          document.getElementById('manage-category-select').value = taxonomy[0].id;
+        }
+        renderSelectedCategoryDetails();
+        alert(`Category "${cat.name}" deleted.`);
+      }
+    }
+
+    // Handle Category change in Product Modal
+    function handleProductCategoryChange() {
+      const catSelect = document.getElementById('prod-category');
+      if (!catSelect) return;
+      const catName = catSelect.value;
+      const cat = taxonomy.find(c => c.name === catName) || taxonomy[0];
+      if (!cat) return;
+
+      // 1. Populate Subcategory Dropdown
+      const subSelect = document.getElementById('prod-subcategory');
+      const subs = cat.subcategories || [];
+      if (subs.length > 0) {
+        subSelect.innerHTML = subs.map(s => `<option value="${s}">${s}</option>`).join('');
+      } else {
+        subSelect.innerHTML = `<option value="General">General / Standard</option>`;
+      }
+
+      // 2. Populate Available Sizes Chips
+      const chipsContainer = document.getElementById('product-modal-size-chips');
+      const sizes = cat.sizes || [];
+      if (sizes.length > 0) {
+        chipsContainer.innerHTML = sizes.map(sz => `
+          <button type="button" onclick="selectProductModalSize('${sz.replace(/'/g, "\\'")}')" class="px-2.5 py-1 text-xs font-mono font-medium rounded-lg bg-white hover:bg-amber-100 hover:text-amber-900 border border-stone-200 transition shadow-xs flex items-center gap-1">
+            <span>📐</span> ${sz}
+          </button>
+        `).join('');
+        // Set first size as default in input if empty
+        const sizeInput = document.getElementById('prod-sizes');
+        if (!sizeInput.value || sizeInput.value === '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)') {
+          sizeInput.value = sizes[0];
+        }
+      } else {
+        chipsContainer.innerHTML = `<span class="text-xs text-stone-400">No preset sizes. Enter dimensions below:</span>`;
+      }
+    }
+
+    function selectProductModalSize(sz) {
+      document.getElementById('prod-sizes').value = sz;
+    }
+
+    // Export Taxonomy as CSV
+    function exportTaxonomyCSV() {
+      const headers = ["Category_ID", "Category_Name", "Icon", "Subcategories", "Available_Sizes", "Description", "Status"];
+      const rows = taxonomy.map(c => [
+        c.id,
+        `"${c.name.replace(/"/g, '""')}"`,
+        `"${c.icon || ''}"`,
+        `"${(c.subcategories || []).join(';')}"`,
+        `"${(c.sizes || []).join(';')}"`,
+        `"${(c.desc || '').replace(/"/g, '""')}"`,
+        "ACTIVE"
+      ]);
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `sambalke_categories_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
     // Official Catalog Data
     let catalog = [
-      { id: 'SK-HBO-001', category: 'Crescent Hobo', title: 'Crimson Jaal Crescent Hobo', desc: 'Red and off-white geometric grid and jaal check ikat.', fabric: 'Pure Handloom Cotton Bandha', sizes: '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)', price: 1699, img: '../assets/crimson_jaal.png', inStock: true },
-      { id: 'SK-HBO-002', category: 'Crescent Hobo', title: 'Regal Bloom Crescent Hobo', desc: 'Deep magenta-pink traditional Sambalpuri floral bandha.', fabric: 'Handwoven Cotton Bandha', sizes: '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)', price: 1699, img: '../assets/regal_bloom.png', inStock: true },
-      { id: 'SK-HBO-003', category: 'Crescent Hobo', title: 'Floral Duet Crescent Hobo', desc: 'Rich indigo blue field accented with bright yellow flora.', fabric: 'Pure Handloom Cotton', sizes: '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)', price: 1699, img: '../assets/floral_duet.png', inStock: true },
-      { id: 'SK-HBO-004', category: 'Crescent Hobo', title: 'Konark Chakra Crescent Hobo', desc: 'Heritage Konark Sun Temple chariot wheel motifs.', fabric: 'Handwoven Odisha Bandha', sizes: '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)', price: 1899, img: '../assets/konark_chakra.png', inStock: true },
-      { id: 'SK-HBO-005', category: 'Crescent Hobo', title: 'Classic Passapalli Crescent Hobo', desc: 'Timeless Odisha chessboard check bandha in red and black.', fabric: 'Sambalpuri Passapalli Handloom', sizes: '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)', price: 1799, img: '../assets/classic_passapalli.png', inStock: true },
-      { id: 'SK-HBO-006', category: 'Crescent Hobo', title: 'Gramya Crescent Hobo', desc: 'Tribal dance and village life folk motifs.', fabric: 'Tribal Heritage Bandha', sizes: '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)', price: 1799, img: '../assets/gramya_crescent.png', inStock: true },
-      { id: 'SK-HBO-011', category: 'Crescent Hobo', title: 'Van Katha Crescent Hobo', desc: 'Forest folklore wildlife weave featuring elephants and tigers.', fabric: 'Sambalpuri Wildlife Ikat', sizes: '13.5 x 13.5 x 2.5 in (Belt: 21.5 in)', price: 1899, img: '../assets/van_katha.png', inStock: true },
-      { id: 'SK-OTH-001', category: 'Other Bags', title: 'Sambalpuri Handloom Backpack', desc: 'Padded everyday daypack in peach ikat.', fabric: '100% Cotton Handloom', sizes: '15 x 12 x 5 in', price: 1899, img: '../assets/other_backpack.png', inStock: true },
-      { id: 'SK-OTH-002', category: 'Other Bags', title: 'Sambalpuri Mobile Pouch Sling', desc: 'Sleek vertical mobile pouch with magnetic lock.', fabric: 'Handloom Cotton Bandha', sizes: '7.5 x 4.5 x 1.5 in', price: 599, img: '../assets/other_mobile_pouch.png', inStock: true },
-      { id: 'SK-OTH-003', category: 'Other Bags', title: 'Traditional Festive Potlis', desc: 'Silk-velvet handcrafted potli bag with gold zari.', fabric: 'Silk-Velvet Blend', sizes: '9 x 8 in', price: 899, img: '../assets/other_potlis.png', inStock: true }
+      { id: 'SK-HBO-001', category: 'The Crescent Hobo', subcategory: 'Floral & Nature Ikat', title: 'Crimson Jaal Crescent Hobo', desc: 'Red and off-white geometric grid and jaal check ikat.', fabric: 'Pure Handloom Cotton Bandha', sizes: 'Standard (13.5 x 13.5 x 2.5 in)', price: 1699, img: '../assets/crimson_jaal.png', inStock: true },
+      { id: 'SK-HBO-002', category: 'The Crescent Hobo', subcategory: 'Floral & Nature Ikat', title: 'Regal Bloom Crescent Hobo', desc: 'Deep magenta-pink traditional Sambalpuri floral bandha.', fabric: 'Handwoven Cotton Bandha', sizes: 'Standard (13.5 x 13.5 x 2.5 in)', price: 1699, img: '../assets/regal_bloom.png', inStock: true },
+      { id: 'SK-HBO-003', category: 'The Crescent Hobo', subcategory: 'Floral & Nature Ikat', title: 'Floral Duet Crescent Hobo', desc: 'Rich indigo blue field accented with bright yellow flora.', fabric: 'Pure Handloom Cotton', sizes: 'Standard (13.5 x 13.5 x 2.5 in)', price: 1699, img: '../assets/floral_duet.png', inStock: true },
+      { id: 'SK-HBO-004', category: 'The Crescent Hobo', subcategory: 'Temple & Chakra', title: 'Konark Chakra Crescent Hobo', desc: 'Heritage Konark Sun Temple chariot wheel motifs.', fabric: 'Handwoven Odisha Bandha', sizes: 'Standard (13.5 x 13.5 x 2.5 in)', price: 1899, img: '../assets/konark_chakra.png', inStock: true },
+      { id: 'SK-HBO-005', category: 'The Crescent Hobo', subcategory: 'Passapalli Weave', title: 'Classic Passapalli Crescent Hobo', desc: 'Timeless Odisha chessboard check bandha in red and black.', fabric: 'Sambalpuri Passapalli Handloom', sizes: 'Standard (13.5 x 13.5 x 2.5 in)', price: 1799, img: '../assets/classic_passapalli.png', inStock: true },
+      { id: 'SK-HBO-006', category: 'The Crescent Hobo', subcategory: 'Heritage Bandha', title: 'Gramya Crescent Hobo', desc: 'Tribal dance and village life folk motifs.', fabric: 'Tribal Heritage Bandha', sizes: 'Standard (13.5 x 13.5 x 2.5 in)', price: 1799, img: '../assets/gramya_crescent.png', inStock: true },
+      { id: 'SK-HBO-011', category: 'The Crescent Hobo', subcategory: 'Heritage Bandha', title: 'Van Katha Crescent Hobo', desc: 'Forest folklore wildlife weave featuring elephants and tigers.', fabric: 'Sambalpuri Wildlife Ikat', sizes: 'Standard (13.5 x 13.5 x 2.5 in)', price: 1899, img: '../assets/van_katha.png', inStock: true },
+      { id: 'SK-OTH-001', category: 'In Other Bags', subcategory: 'Backpacks', title: 'Sambalpuri Handloom Backpack', desc: 'Padded everyday daypack in peach ikat.', fabric: '100% Cotton Handloom', sizes: 'Backpack (15 x 12 x 5 in)', price: 1899, img: '../assets/other_backpack.png', inStock: true },
+      { id: 'SK-OTH-002', category: 'In Other Bags', subcategory: 'Mobile Pouches', title: 'Sambalpuri Mobile Pouch Sling', desc: 'Sleek vertical mobile pouch with magnetic lock.', fabric: 'Handloom Cotton Bandha', sizes: 'Mobile Sling (7.5 x 4.5 x 1.5 in)', price: 599, img: '../assets/other_mobile_pouch.png', inStock: true },
+      { id: 'SK-OTH-003', category: 'In Other Bags', subcategory: 'Traditional Potlis', title: 'Traditional Festive Potlis', desc: 'Silk-velvet handcrafted potli bag with gold zari.', fabric: 'Silk-Velvet Blend', sizes: 'Potli (9 x 8 in)', price: 899, img: '../assets/other_potlis.png', inStock: true }
     ];
 
     const savedCatalog = localStorage.getItem('sambalke_admin_catalog');
@@ -348,15 +907,19 @@
 
     function toggleAddModal(show) {
       const modal = document.getElementById('product-modal');
-      if (show) modal.classList.remove('hidden');
-      else modal.classList.add('hidden');
+      if (show) {
+        modal.classList.remove('hidden');
+        renderTaxonomyDropdowns();
+      } else {
+        modal.classList.add('hidden');
+      }
     }
 
     function renderProductsTable() {
-      const filter = document.getElementById('filter-category').value;
+      const filter = document.getElementById('filter-category') ? document.getElementById('filter-category').value : 'ALL';
       const tbody = document.getElementById('product-tbody');
       
-      const filtered = catalog.filter(p => filter === 'ALL' || p.category.toLowerCase() === filter.toLowerCase());
+      const filtered = catalog.filter(p => filter === 'ALL' || p.category.toLowerCase() === filter.toLowerCase() || (filter === 'Crescent Hobo' && p.category.includes('Hobo')));
 
       tbody.innerHTML = filtered.map(p => `
         <tr class="hover:bg-stone-50/80 transition">
@@ -367,9 +930,10 @@
             <span class="text-[10px] font-mono font-bold text-amber-900 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">${p.id}</span>
             <div class="font-bold text-stone-900 text-xs mt-0.5">${p.title}</div>
             <div class="text-[11px] text-stone-500 truncate max-w-xs">${p.fabric}</div>
+            ${p.subcategory ? `<span class="inline-block mt-0.5 text-[10px] text-stone-600 bg-stone-100 px-1.5 py-0.2 rounded border border-stone-200">${p.subcategory}</span>` : ''}
           </td>
           <td class="py-3 px-4">
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${p.category === 'Crescent Hobo' ? 'bg-amber-100 text-amber-900' : 'bg-purple-100 text-purple-900'}">${p.category}</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${p.category.includes('Hobo') ? 'bg-amber-100 text-amber-900' : 'bg-purple-100 text-purple-900'}">${p.category}</span>
           </td>
           <td class="py-3 px-4 font-mono text-[11px] text-stone-600">${p.sizes}</td>
           <td class="py-3 px-4 font-black text-amber-900 text-sm">₹${p.price.toLocaleString('en-IN')}</td>
@@ -385,7 +949,7 @@
       `).join('');
 
       document.getElementById('stat-total').innerText = catalog.length;
-      document.getElementById('stat-bags').innerText = catalog.filter(p => p.category === 'Crescent Hobo').length;
+      document.getElementById('stat-bags').innerText = catalog.filter(p => p.category.includes('Hobo')).length;
       document.getElementById('stat-instock').innerText = catalog.filter(p => p.inStock).length;
     }
 
@@ -410,23 +974,24 @@
       e.preventDefault();
       const title = document.getElementById('prod-title').value.trim();
       const category = document.getElementById('prod-category').value;
+      const subcategory = document.getElementById('prod-subcategory') ? document.getElementById('prod-subcategory').value : '';
       const price = parseFloat(document.getElementById('prod-price').value) || 0;
       const fabric = document.getElementById('prod-fabric').value.trim() || 'Sambalpuri Handloom';
-      const sizes = document.getElementById('prod-sizes').value.trim() || '13.5 x 13.5 x 2.5 in';
+      const sizes = document.getElementById('prod-sizes').value.trim() || 'Standard';
       const img = document.getElementById('prod-img').value.trim();
       const desc = document.getElementById('prod-desc').value.trim();
       const inStock = document.getElementById('prod-instock').checked;
 
-      const prefix = category === 'Crescent Hobo' ? 'SK-HBO' : 'SK-OTH';
-      const nextId = `${prefix}-${('000' + (catalog.length + 1)).slice(-3)}`;
+      const codeMatch = category.replace(/[^a-zA-Z]/g, '').slice(0, 3).toUpperCase() || 'ITM';
+      const nextId = `SK-${codeMatch}-${('000' + (catalog.length + 1)).slice(-3)}`;
 
-      const newProduct = { id: nextId, category, title, desc, fabric, sizes, price, img, inStock };
+      const newProduct = { id: nextId, category, subcategory, title, desc, fabric, sizes, price, img, inStock };
       catalog.unshift(newProduct);
       saveCatalogLocally();
       toggleAddModal(false);
       document.getElementById('product-form').reset();
       renderProductsTable();
-      alert(`Product ${nextId} added successfully!`);
+      alert(`Product ${nextId} (${title}) added successfully to category "${category}"!`);
     }
 
     function saveCatalogLocally() {
@@ -434,9 +999,9 @@
     }
 
     function exportProductsCSV() {
-      const headers = ["Product_ID", "Category", "Title", "Description", "Fabric_Type", "Dimensions", "Price_INR", "Image_URL", "In_Stock"];
+      const headers = ["Product_ID", "Category", "Subcategory", "Title", "Description", "Fabric_Type", "Dimensions", "Price_INR", "Image_URL", "In_Stock"];
       const rows = catalog.map(p => [
-        p.id, p.category, `"${p.title.replace(/"/g, '""')}"`, `"${(p.desc||'').replace(/"/g, '""')}"`, `"${p.fabric.replace(/"/g, '""')}"`, `"${p.sizes}"`, p.price, `"${p.img}"`, p.inStock ? "TRUE" : "FALSE"
+        p.id, `"${p.category}"`, `"${p.subcategory||''}"`, `"${p.title.replace(/"/g, '""')}"`, `"${(p.desc||'').replace(/"/g, '""')}"`, `"${p.fabric.replace(/"/g, '""')}"`, `"${p.sizes}"`, p.price, `"${p.img}"`, p.inStock ? "TRUE" : "FALSE"
       ]);
       const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
       const encodedUri = encodeURI(csvContent);
@@ -450,6 +1015,8 @@
 
     // Init
     checkAuthStatus();
+    renderTaxonomyDropdowns();
+    renderProductsTable();
   </script>
 </body>
 </html>

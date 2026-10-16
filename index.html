@@ -141,49 +141,36 @@
               </button>
             </div>
 
-            <!-- Main Big Preview Container with Zoom & Click to Open 3D Studio & Big View -->
-            <div class="relative aspect-square sm:aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-b from-stone-50 via-white to-stone-100/70 border border-stone-200/90 shadow-sm flex items-center justify-center group cursor-zoom-in" onclick="openBigProductModal(currentVariant)" title="Click to view single product big & turn 3D angle with slider">
+            <!-- Main Product Preview Area - Clean Stacked Layout -->
+            <div class="space-y-2">
               
-              <!-- Subtle Background Ambient Pattern -->
-              <div class="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#78350f_1px,transparent_1px)] [background-size:16px_16px]"></div>
-
-              <!-- Main Image with Hover Scale -->
-              <img id="main-preview" src="workflows/assets/crimson_jaal.png" alt="SambalKe Crescent Hobo Bag" class="max-h-[85%] max-w-[85%] object-contain transition-transform duration-500 ease-out group-hover:scale-105 drop-shadow-md">
-
-              <!-- Floating Top Badges -->
-              <div class="absolute top-3 left-3 flex items-center gap-1.5 z-10">
-                <span id="preview-badge" class="bg-stone-900/85 backdrop-blur-md text-amber-200 text-xs px-3 py-1.5 rounded-xl font-bold tracking-wide shadow-md border border-white/10 flex items-center gap-1.5">
+              <!-- Top Info Bar: Badge + Actions side by side -->
+              <div class="flex items-center justify-between gap-2">
+                <span id="preview-badge" class="bg-stone-900 text-amber-200 text-xs px-3 py-1.5 rounded-xl font-bold tracking-wide shadow-md border border-stone-700 flex items-center gap-1.5">
                   <span>🌙</span> Crescent Hobo (13.5″ × 13.5″)
                 </span>
-                <span class="hidden sm:inline-flex items-center gap-1 bg-amber-500 text-stone-950 text-[10px] px-2 py-1 rounded-lg font-bold shadow-sm">
-                  <span>🌟</span> 3D Turn Available
-                </span>
-              </div>
-
-              <!-- Floating Top Actions -->
-              <div class="absolute top-3 right-3 flex items-center gap-1.5 z-10" onclick="event.stopPropagation()">
-                <!-- Mark as Interested Toggle Button -->
-                <button type="button" id="main-btn-interested" onclick="toggleInterestedCurrent()" class="px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-md flex items-center gap-1.5 bg-white/95 hover:bg-white text-stone-800 border border-stone-200/80 backdrop-blur-md">
-                  <span id="main-heart-icon" class="text-sm">🤍</span>
-                  <span id="main-heart-label">Add to Interest</span>
-                </button>
-
-                <!-- Fullscreen 3D Zoom Trigger -->
-                <button type="button" onclick="openBigProductModal(currentVariant)" class="px-3 py-1.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold transition shadow-md backdrop-blur-md border border-amber-600/50 flex items-center gap-1" title="Click to open big image and 3D angle slider">
-                  <span>🌟</span> 3D & Big View
-                </button>
-              </div>
-
-              <!-- Floating Bottom Gradient Overlay with Instruction -->
-              <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-stone-950/85 via-stone-950/40 to-transparent p-3.5 pt-8 flex items-center justify-between text-white text-xs opacity-95 group-hover:opacity-100 transition-opacity">
-                <div class="flex items-center gap-2">
-                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                  <span class="font-medium text-stone-100 text-[11px]">Click product to open <strong>3D Angle Studio & Big View</strong></span>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" id="main-btn-interested" onclick="toggleInterestedCurrent()" class="px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1.5 bg-white hover:bg-stone-50 text-stone-800 border border-stone-200">
+                    <span id="main-heart-icon" class="text-sm">🤍</span>
+                    <span id="main-heart-label">Add to Interest</span>
+                  </button>
+                  <button type="button" onclick="openBigProductModal(currentVariant)" class="px-3 py-1.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold transition shadow-md border border-amber-600/50 flex items-center gap-1" title="Open big image and 3D angle slider">
+                    <span>🌟</span> 3D &amp; Big View
+                  </button>
                 </div>
-                <span class="text-[10px] font-bold uppercase tracking-wider bg-amber-500 text-stone-950 px-2.5 py-1 rounded-lg border border-amber-300 shadow-sm flex items-center gap-1">
-                  <span>🔄</span> Turn 3D Angle
-                </span>
               </div>
+
+              <!-- Image Container - Click opens modal -->
+              <div class="relative aspect-square sm:aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-b from-stone-50 via-white to-stone-100/70 border border-stone-200/90 shadow-sm flex items-center justify-center cursor-pointer group" onclick="openBigProductModal(currentVariant)">
+                <div class="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#78350f_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
+                <img id="main-preview" src="workflows/assets/crimson_jaal.png" alt="SambalKe Crescent Hobo Bag" class="max-h-[85%] max-w-[85%] object-contain transition-transform duration-500 ease-out group-hover:scale-105 drop-shadow-md">
+                <!-- Simple bottom hint - pointer-events-none so it doesn't block clicks -->
+                <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-stone-900/60 to-transparent p-3 pointer-events-none flex items-center justify-center gap-2 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span class="font-medium">Click to open</span>
+                  <span class="font-bold bg-amber-500 text-stone-950 px-2 py-0.5 rounded-lg text-[10px]">🔄 3D Angle Studio</span>
+                </div>
+              </div>
+
             </div>
 
             <!-- Dynamic Modern Thumbnail Selector -->

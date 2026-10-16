@@ -1,0 +1,14 @@
+index.html
+  h_295dae1479a15c 689,694,721,724,761,826,1162,1165-1168,1525-1533,1574-1578,1580-1581,1583-1584,1591-1595
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3a9c4e885b5284c12f6589298e28431754e1282f",
+  "prompts": {},
+  "humans": {
+    "h_295dae1479a15c": {
+      "author": "nsarangi1 <nsarangi@cisco.com>"
+    }
+  }
+}

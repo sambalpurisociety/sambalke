@@ -40,7 +40,7 @@
           "Handwoven stories for everyday journey" • Traditional in Motion
         </p>
         <p class="text-xs text-stone-300 leading-relaxed pt-1">
-          Authentic Odisha Bandha ikat weaves shaped into an ergonomic crescent silhouette. No online payment required—contact us via WhatsApp or Phone to place your order in Rupees (₹).
+          Authentic Odisha Bandha ikat weaves shaped into an ergonomic crescent silhouette. No online payment required—submit an inquiry to receive your official price quotation and weave certificate by email.
         </p>
       </div>
 
@@ -133,8 +133,8 @@
           <span class="text-[10px] uppercase font-bold tracking-wider text-amber-200 bg-white/10 px-2 py-0.5 rounded">
             Artisan Order Inquiry
           </span>
-          <h3 class="text-lg font-bold text-white mt-1">Reserve Your Handloom Bag</h3>
-          <p class="text-xs text-stone-200">No payment online • We will call/WhatsApp you to confirm delivery</p>
+          <h3 class="text-lg font-bold text-white mt-1">Inquire About This Handloom Bag</h3>
+          <p class="text-xs text-stone-200">No payment online • Official batch price will be sent to your email</p>
         </div>
         <button onclick="closeOrderModal()" class="text-stone-300 hover:text-white text-2xl font-bold leading-none">&times;</button>
       </div>
@@ -150,8 +150,9 @@
             <h4 id="modal-item-title" class="text-xs font-bold text-stone-900 truncate mt-0.5">Crimson Jaal Crescent Hobo</h4>
             <div id="modal-item-dim" class="text-[11px] text-stone-500 font-mono">13.5 x 13.5 x 2.5 in</div>
             <div class="flex items-center gap-2 mt-1">
-              <span class="text-xs text-stone-500">Price in Rupees:</span>
-              <span id="modal-item-price" class="text-sm font-extrabold text-amber-900">₹1,699</span>
+              <span class="text-[10px] font-bold text-amber-900 bg-amber-100/80 px-2 py-0.5 rounded-full border border-amber-200">
+                ✉️ Price on Request (Sent via Email)
+              </span>
             </div>
           </div>
         </div>
@@ -161,6 +162,11 @@
           <div>
             <label class="block text-xs font-bold text-stone-700 mb-1">Your Full Name *</label>
             <input type="text" id="cust-name" required placeholder="e.g. Subhashree Das" class="w-full px-3.5 py-2 text-xs rounded-xl bg-stone-50 border border-stone-300 text-stone-900 focus:ring-2 focus:ring-amber-800 outline-none">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Email Address * <span class="font-normal text-amber-900 text-[10px]">(Price quote will be emailed here)</span></label>
+            <input type="email" id="cust-email" required placeholder="e.g. subhashree@example.com" class="w-full px-3.5 py-2 text-xs rounded-xl bg-stone-50 border border-stone-300 text-stone-900 focus:ring-2 focus:ring-amber-800 outline-none">
           </div>
 
           <div>
@@ -181,7 +187,7 @@
             </div>
             <div>
               <label class="block text-xs font-bold text-stone-700 mb-1">Quantity *</label>
-              <input type="number" id="cust-qty" min="1" max="10" value="1" onchange="recalculateModalTotal()" class="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 border border-stone-300 text-stone-900 focus:ring-2 focus:ring-amber-800 outline-none font-bold">
+              <input type="number" id="cust-qty" min="1" max="10" value="1" class="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 border border-stone-300 text-stone-900 focus:ring-2 focus:ring-amber-800 outline-none font-bold">
             </div>
           </div>
 
@@ -191,18 +197,23 @@
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">Special Message / Questions</label>
-            <textarea id="cust-notes" rows="2" placeholder="e.g. Please confirm fabric feel or if faster dispatch is available." class="w-full px-3.5 py-2 text-xs rounded-xl bg-stone-50 border border-stone-300 text-stone-900 focus:ring-2 focus:ring-amber-800 outline-none"></textarea>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Special Message / Weave Questions</label>
+            <textarea id="cust-notes" rows="2" placeholder="e.g. Please confirm fabric feel or if gift packing is available." class="w-full px-3.5 py-2 text-xs rounded-xl bg-stone-50 border border-stone-300 text-stone-900 focus:ring-2 focus:ring-amber-800 outline-none"></textarea>
           </div>
 
-          <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 flex justify-between items-center text-xs">
-            <span class="font-bold text-stone-700">Estimated Total (Pay on confirmation):</span>
-            <span id="modal-estimated-total" class="text-base font-extrabold text-amber-900">₹1,699</span>
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs space-y-1">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-stone-700">Pricing Policy:</span>
+              <span class="font-bold text-amber-900 bg-amber-100/80 px-2 py-0.5 rounded-full text-[11px]">Official Price Sent via Email</span>
+            </div>
+            <p class="text-[10px] text-stone-500 pt-1 border-t border-amber-200/60 leading-relaxed">
+              We do not display public prices. After your inquiry is received, our team checks current loom schedules and sends you the exact price quotation and order confirmation.
+            </p>
           </div>
 
           <div class="pt-2 flex flex-col gap-2">
             <button type="submit" id="submit-inquiry-btn" class="w-full py-2.5 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold shadow-md transition flex items-center justify-center gap-2">
-              <span>📩</span> Submit Order Inquiry (Free)
+              <span>✉️</span> Submit Inquiry (Receive Price by Mail)
             </button>
             <button type="button" onclick="sendViaDirectWhatsApp()" class="w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center justify-center gap-2">
               <span>💬</span> Inquire Directly on WhatsApp
@@ -219,7 +230,7 @@
           <div>
             <h4 class="text-lg font-bold text-stone-900">Inquiry Received!</h4>
             <p class="text-xs text-stone-500 mt-1 max-w-sm mx-auto">
-              Our team has been notified via email. We will review bag stock and message your mobile number shortly.
+              Our team has been notified. The official batch price quote and weave authenticity details will be emailed to your inbox shortly.
             </p>
             <div id="success-ref-box" class="mt-3 text-xs font-mono font-bold text-amber-900 bg-amber-50 p-2 rounded-lg border border-amber-200 inline-block">
               Ref: INQ-PENDING
@@ -551,15 +562,15 @@
               <span class="font-bold text-stone-800">${p.dim}</span>
             </div>
 
-            <!-- Price and Buy Action -->
+            <!-- Price on Request and Buy Action -->
             <div class="pt-1 flex items-center justify-between">
               <div>
-                <span class="text-[10px] text-stone-400 block font-medium">Price in Rupees</span>
-                <span class="text-lg font-black text-amber-900">₹${p.price.toLocaleString('en-IN')}</span>
+                <span class="text-[10px] font-bold text-amber-900 bg-amber-100/70 px-2 py-0.5 rounded-full inline-block">Price on Request</span>
+                <span class="text-[10px] text-stone-400 block mt-0.5">Sent via Email</span>
               </div>
 
               <button onclick="openOrderModal('${p.id}')" class="px-3.5 py-1.5 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1">
-                <span>🛍️</span> Inquire / Buy
+                <span>✉️</span> Inquire Price
               </button>
             </div>
 
@@ -603,20 +614,18 @@
       document.getElementById('modal-item-code').innerText = selectedProduct.id;
       document.getElementById('modal-item-title').innerText = selectedProduct.title;
       document.getElementById('modal-item-dim').innerText = selectedProduct.dim;
-      document.getElementById('modal-item-price').innerText = `₹${selectedProduct.price.toLocaleString('en-IN')}`;
 
       const sizeSelect = document.getElementById('cust-size');
       sizeSelect.innerHTML = `<option value="${selectedProduct.dim}">${selectedProduct.dim}</option>`;
 
       document.getElementById('cust-qty').value = 1;
-      recalculateModalTotal();
 
       // Reset
       document.getElementById('inquiry-form').reset();
       document.getElementById('inquiry-form').classList.remove('hidden');
       document.getElementById('modal-success-state').classList.add('hidden');
       document.getElementById('submit-inquiry-btn').disabled = false;
-      document.getElementById('submit-inquiry-btn').innerText = "📩 Submit Order Inquiry (Free)";
+      document.getElementById('submit-inquiry-btn').innerText = "✉️ Submit Inquiry (Receive Price by Mail)";
 
       document.getElementById('order-modal').classList.remove('hidden');
     }
@@ -625,18 +634,12 @@
       document.getElementById('order-modal').classList.add('hidden');
     }
 
-    function recalculateModalTotal() {
-      if (!selectedProduct) return;
-      const qty = parseInt(document.getElementById('cust-qty').value, 10) || 1;
-      const total = selectedProduct.price * qty;
-      document.getElementById('modal-estimated-total').innerText = `₹${total.toLocaleString('en-IN')}`;
-    }
-
     async function submitCustomerInquiry(e) {
       e.preventDefault();
       if (!selectedProduct) return;
 
       const name = document.getElementById('cust-name').value.trim();
+      const email = document.getElementById('cust-email') ? document.getElementById('cust-email').value.trim() : "";
       const phone = document.getElementById('cust-phone').value.trim();
       const size = document.getElementById('cust-size').value;
       const qty = parseInt(document.getElementById('cust-qty').value, 10) || 1;
@@ -646,6 +649,7 @@
 
       const payload = {
         customerName: name,
+        customerEmail: email,
         mobileNumber: "+91" + phone.replace(/^0+/, ''),
         productId: selectedProduct.id,
         productTitle: selectedProduct.title,
@@ -663,7 +667,7 @@
 
       const inquiryRef = "INQ-" + Math.floor(1000 + Math.random() * 9000);
       const waLink = `https://wa.me/${STORE_WHATSAPP}?text=` + encodeURIComponent(
-        `Hello ${BRAND_NAME},\nI wish to order:\n• Product: ${selectedProduct.title} (${selectedProduct.id})\n• Dimensions: ${size}\n• Quantity: ${qty}\n• Estimated Total: ₹${total.toLocaleString('en-IN')}\n• Name: ${name}\n• Phone: ${payload.mobileNumber}\n• Delivery: ${address}\nPlease confirm stock availability!`
+        `Hello ${BRAND_NAME},\nI wish to inquire about:\n• Product: ${selectedProduct.title} (${selectedProduct.id})\n• Dimensions: ${size}\n• Quantity: ${qty}\n• Name: ${name}\n• Email: ${email}\n• Phone: ${payload.mobileNumber}\n• Delivery: ${address}\nPlease email me the price quote and availability!`
       );
 
       if (APPS_SCRIPT_URL) {
@@ -688,13 +692,13 @@
     function sendViaDirectWhatsApp() {
       if (!selectedProduct) return;
       const name = document.getElementById('cust-name').value.trim() || "Customer";
+      const email = document.getElementById('cust-email') ? document.getElementById('cust-email').value.trim() : "";
       const phone = document.getElementById('cust-phone').value.trim() || "Not provided";
       const size = document.getElementById('cust-size').value;
       const qty = parseInt(document.getElementById('cust-qty').value, 10) || 1;
       const address = document.getElementById('cust-address').value.trim() || "To be confirmed";
-      const total = selectedProduct.price * qty;
 
-      const waMsg = `Hello ${BRAND_NAME},\n\nI want to order this Sambalpuri item:\n• *Bag:* ${selectedProduct.title} (${selectedProduct.id})\n• *Dimensions:* ${size}\n• *Quantity:* ${qty}\n• *Price:* ₹${total.toLocaleString('en-IN')}\n• *My Name:* ${name}\n• *Phone:* ${phone}\n• *City/Address:* ${address}\n\nPlease share payment details and dispatch estimate!`;
+      const waMsg = `Hello ${BRAND_NAME},\n\nI want to inquire about this Sambalpuri item:\n• *Bag:* ${selectedProduct.title} (${selectedProduct.id})\n• *Dimensions:* ${size}\n• *Quantity:* ${qty}\n• *My Name:* ${name}\n• *Email:* ${email}\n• *Phone:* ${phone}\n• *City/Address:* ${address}\n\nPlease email me the price quote and availability!`;
 
       window.open(`https://wa.me/${STORE_WHATSAPP}?text=${encodeURIComponent(waMsg)}`, '_blank');
     }

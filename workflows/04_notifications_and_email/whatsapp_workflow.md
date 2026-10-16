@@ -10,20 +10,27 @@ Since **SambalKe Handlooms does not process payments online**, this document out
 [Customer on Google Site]
       │
       ▼
-1. Selects Sambalpuri Bag & Size (Price in ₹)
+1. Selects Sambalpuri Bag & Size (Price is hidden from public; displayed as "Price on Request")
       │
       ▼
-2. Fills Contact Form (Mobile Phone, Name, City/Pincode, Notes)
+2. Fills Inquiry Form (Customer Name, Email Address, Mobile Phone, City/Pincode, Notes)
       │
       ▼
-3. Clicks "Submit Inquiry"
+3. Clicks "Submit Inquiry (Receive Price by Mail)"
       │
-      ├──> A. Apps Script logs row to "Inquiries_Orders" in Google Sheet
+      ├──> A. Apps Script logs row to "Inquiries_Orders" in Google Sheet (with Admin Reference Price)
       │
-      ├──> B. Apps Script emails all addresses in "NOTIFICATION_EMAIL_LIST"
+      ├──> B. Apps Script emails all addresses in "NOTIFICATION_EMAIL_LIST" with 1-click "Email Price Quote" button
       │
-      └──> C. Frontend prompts customer with instant "Chat on WhatsApp" button
+      └──> C. Admin sends official price quotation (₹) directly to Customer's Email and/or WhatsApp
 ```
+
+---
+
+## 🔒 Pricing Policy: Hidden from Customer, Quoted via Email
+- **Customer View**: Customers see authentic high-resolution images, weave specifications, and dimensions with the badge **"Price on Request (Sent via Email)"**. No prices are shown publicly.
+- **Admin View**: Admins (after entering master password `sambalke@2026`) see all item catalog prices and costing margins in INR (₹) on the **Costing Calculator** and **Inquiries Log**.
+- **Email Quotation**: When an inquiry arrives, the admin receives an alert email with customer details and a 1-click button to reply to the customer's email with the exact price quote in Rupees.
 
 ---
 

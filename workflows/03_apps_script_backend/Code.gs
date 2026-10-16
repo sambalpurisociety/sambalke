@@ -126,6 +126,7 @@ function doPost(e) {
 
     // Validation (Customer Order Inquiries)
     const customerName = (payload.customerName || payload.name || "Valued Customer").toString().trim();
+    const customerEmail = (payload.customerEmail || payload.email || "").toString().trim();
     const rawMobile = (payload.mobileNumber || payload.phone || "").toString().trim();
     const productId = (payload.productId || "SK-BAG-GEN").toString().trim();
     const productTitle = (payload.productTitle || payload.title || "Sambalpuri Handloom Bag").toString().trim();
@@ -165,7 +166,7 @@ function doPost(e) {
     if (!inquirySheet) {
       inquirySheet = ss.insertSheet(SHEET_INQUIRIES);
       inquirySheet.appendRow([
-        "Inquiry_ID", "Timestamp", "Customer_Name", "Mobile_Number",
+        "Inquiry_ID", "Timestamp", "Customer_Name", "Customer_Email", "Mobile_Number",
         "Product_ID", "Product_Title", "Selected_Size", "Quantity",
         "Unit_Price_INR", "Estimated_Total_INR", "Delivery_Address_Pincode",
         "Customer_Notes", "Order_Status", "Notification_Emails_Dispatched", "Notes_Internal"
@@ -177,6 +178,7 @@ function doPost(e) {
       inquiryId,
       timestampFormatted,
       customerName,
+      customerEmail,
       mobileClean,
       productId,
       productTitle,
@@ -186,9 +188,9 @@ function doPost(e) {
       estimatedTotal,
       deliveryAddress,
       customerNotes,
-      "New Inquiry",
+      "New Inquiry - Quote Pending",
       emailSentLog,
-      "Pending seller contact"
+      `Price to quote: ₹${unitPrice} (hidden from public site)`
     ]);
 
     // 3. Dispatch Email Notification to Configurable Email List
@@ -200,6 +202,7 @@ function doPost(e) {
         inquiryId: inquiryId,
         timestamp: timestampFormatted,
         customerName: customerName,
+        customerEmail: customerEmail,
         mobileNumber: mobileClean,
         productId: productId,
         productTitle: productTitle,
@@ -220,9 +223,9 @@ function doPost(e) {
       `*Order Ref:* ${inquiryId}\n` +
       `*Product:* ${productTitle} (${selectedSize})\n` +
       `*Qty:* ${quantity}\n` +
-      `*Total:* ₹${estimatedTotal.toLocaleString('en-IN')}\n` +
+      `*My Email:* ${customerEmail}\n` +
       `*My Phone:* ${mobileClean}\n` +
-      `Please let me know how to confirm and complete payment.`;
+      `Please email me the price quotation and confirmation!`;
     const waUrl = `https://wa.me/${storeWhatsApp}?text=${encodeURIComponent(waText)}`;
 
     return createJsonResponse({
@@ -377,7 +380,26 @@ function sendInquiryEmailNotification(d) {
   
   // Format WhatsApp Link for Seller to click and message customer directly
   const sellerToCustomerWa = `https://wa.me/${d.mobileNumber.replace(/[^\d]/g, '')}?text=` +
-    encodeURIComponent(`Hello ${d.customerName}, thank you for your inquiry for the ${d.productTitle} on SambalKe Handlooms! I am following up to confirm your size (${d.selectedSize}) and delivery address.`);
+    encodeURIComponent(`Hello ${d.customerName}, thank you for your inquiry for the ${d.productTitle} on SambalKe Handlooms! Here is your price quote: Rs. ${d.estimatedTotal}. Please let us know if you wish to confirm!`);
+
+  // Format 1-Click Email Quotation Link for Seller to click and email customer directly
+  const emailQuoteSubject = encodeURIComponent(`Price Quotation: ${d.productTitle} - SambalKe Handlooms`);
+  const emailQuoteBody = encodeURIComponent(
+    `Dear ${d.customerName},\n\n` +
+    `Thank you for your interest in SambalKe Handlooms!\n\n` +
+    `Here is the official price quotation for your requested Sambalpuri bag:\n` +
+    `• Product: ${d.productTitle} (${d.productId})\n` +
+    `• Size: ${d.selectedSize}\n` +
+    `• Quantity: ${d.quantity}\n` +
+    `• Price: Rs. ${d.unitPrice.toLocaleString('en-IN')}\n` +
+    `• Total: Rs. ${d.estimatedTotal.toLocaleString('en-IN')}\n` +
+    `• Shipping/Delivery: Free across India\n\n` +
+    `To confirm this order, please reply directly to this email or message us on WhatsApp at +91 98765 43210.\n\n` +
+    `Warm regards,\n` +
+    `SambalKe Handlooms Team\n` +
+    `sambalpurisociety@gmail.com`
+  );
+  const sellerToCustomerEmail = `mailto:${d.customerEmail || ''}?subject=${emailQuoteSubject}&body=${emailQuoteBody}`;
 
   const htmlBody = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e7e5e4; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
@@ -401,7 +423,7 @@ function sendInquiryEmailNotification(d) {
         <!-- Alert Callout -->
         <div style="background-color: #fffbeb; border-left: 4px solid #d97706; padding: 12px 16px; border-radius: 4px; margin-bottom: 20px;">
           <p style="margin: 0; font-size: 13px; color: #92400e; font-weight: 600;">
-            ⚠️ Customer cannot pay online. Please call or message them on WhatsApp to confirm order & payment.
+            ⚠️ Customer was NOT shown prices on the site. Please email or message them the price quote below!
           </p>
         </div>
 
@@ -414,6 +436,12 @@ function sendInquiryEmailNotification(d) {
             <tr>
               <td style="padding: 4px 0; color: #78716c; width: 130px;"><strong>Name:</strong></td>
               <td style="padding: 4px 0; color: #1c1917; font-weight: bold;">${d.customerName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 4px 0; color: #78716c;"><strong>Email:</strong></td>
+              <td style="padding: 4px 0; color: #1c1917; font-weight: bold; font-family: monospace;">
+                <a href="${sellerToCustomerEmail}" style="color: #991b1b; text-decoration: none;">✉️ ${d.customerEmail || 'Not provided'}</a>
+              </td>
             </tr>
             <tr>
               <td style="padding: 4px 0; color: #78716c;"><strong>Mobile Phone:</strong></td>
@@ -431,18 +459,24 @@ function sendInquiryEmailNotification(d) {
             </tr>
           </table>
 
-          <!-- 1-Click WhatsApp Quick Action Button -->
+          <!-- 1-Click Action Buttons for Seller -->
           <div style="margin-top: 14px; text-align: left;">
-            <a href="${sellerToCustomerWa}" target="_blank" style="background-color: #15803d; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: bold; padding: 9px 16px; border-radius: 6px; display: inline-block;">
-              💬 Click to Chat on WhatsApp with Customer
+            <a href="${sellerToCustomerEmail}" target="_blank" style="background-color: #78350f; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: bold; padding: 9px 16px; border-radius: 6px; display: inline-block; margin-right: 6px; margin-bottom: 6px;">
+              ✉️ Email Price Quote to Customer
+            </a>
+            <a href="${sellerToCustomerWa}" target="_blank" style="background-color: #15803d; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: bold; padding: 9px 16px; border-radius: 6px; display: inline-block; margin-bottom: 6px;">
+              💬 Chat on WhatsApp with Customer
             </a>
           </div>
         </div>
 
         <!-- Product Order Table -->
-        <h3 style="margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; color: #78716c; letter-spacing: 0.5px;">
-          🛍️ Selected Product Details
+        <h3 style="margin: 0 0 4px 0; font-size: 14px; text-transform: uppercase; color: #78716c; letter-spacing: 0.5px;">
+          🛍️ Admin Price Guide (To Quote by Email)
         </h3>
+        <p style="margin: 0 0 10px 0; font-size: 12px; color: #78716c;">
+          <em>Notice: Price was hidden from customer on the website. Use the numbers below to send the quote.</em>
+        </p>
         <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px;">
           <thead>
             <tr style="background-color: #f5f5f4; border-bottom: 2px solid #e7e5e4;">

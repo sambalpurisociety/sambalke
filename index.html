@@ -82,50 +82,96 @@
       <section class="lg:col-span-7 space-y-6">
         <div class="bg-white border border-stone-200 rounded-2xl p-6 shadow-sm space-y-5">
           
-          <!-- Image Gallery with Live Preview -->
-          <div class="space-y-4">
-            <div class="relative aspect-square sm:aspect-[4/3] rounded-xl overflow-hidden bg-stone-50 border border-stone-200 flex items-center justify-center group p-4">
-              <img id="main-preview" src="workflows/assets/crimson_jaal.png" alt="SambalKe Crescent Hobo Bag" class="max-h-full max-w-full object-contain">
-              <span id="preview-badge" class="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-md text-amber-200 text-xs px-2.5 py-1 rounded-md font-bold tracking-wide">
-                Crescent Hobo (13.5″ × 13.5″)
-              </span>
+          <!-- Modern Image Gallery with Live Preview & Interactive Controls -->
+          <div class="space-y-3">
+            
+            <!-- Category & Wishlist Quick Filter Tabs -->
+            <div class="flex items-center justify-between gap-2 overflow-x-auto pb-1 text-xs">
+              <div class="flex items-center gap-1 p-1 bg-stone-100 rounded-xl border border-stone-200">
+                <button type="button" onclick="filterGalleryCategory('all')" id="gallery-tab-all" class="px-3 py-1.5 rounded-lg font-bold transition text-xs bg-amber-900 text-white shadow-xs whitespace-nowrap">
+                  ✨ All Weaves
+                </button>
+                <button type="button" onclick="filterGalleryCategory('hobo')" id="gallery-tab-hobo" class="px-3 py-1.5 rounded-lg font-semibold transition text-xs text-stone-600 hover:text-stone-900 whitespace-nowrap">
+                  🌙 The Crescent Hobo
+                </button>
+                <button type="button" onclick="filterGalleryCategory('daily')" id="gallery-tab-daily" class="px-3 py-1.5 rounded-lg font-semibold transition text-xs text-stone-600 hover:text-stone-900 whitespace-nowrap">
+                  👜 Daily Bags & Totes
+                </button>
+              </div>
+
+              <!-- Wishlist / Interested Quick Filter Button -->
+              <button type="button" onclick="filterGalleryCategory('interested')" id="gallery-tab-interested" class="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold transition flex items-center gap-1.5 shrink-0 shadow-xs whitespace-nowrap">
+                <span>❤️</span> Interested <span id="interested-counter-badge" class="px-1.5 py-0.2 bg-rose-200 text-rose-900 rounded-full text-[10px] font-extrabold">0</span>
+              </button>
             </div>
 
-            <!-- Thumbnail Selector / Choose Bags -->
-            <div class="grid grid-cols-4 gap-2">
-              <div onclick="selectProductVariant('crimson_jaal')" id="thumb-card-crimson_jaal" class="cursor-pointer border-2 border-amber-900 rounded-xl p-2 bg-amber-50/50 flex flex-col items-center gap-1 transition-all text-center">
-                <img src="workflows/assets/crimson_jaal.png" class="w-14 h-14 object-contain rounded-lg border border-stone-200 bg-white">
-                <span class="text-[10px] font-bold text-stone-900 truncate w-full">Crimson Jaal</span>
-                <span class="text-[9px] font-bold text-amber-900 bg-amber-100/70 px-1.5 py-0.5 rounded-full">Price on Request</span>
+            <!-- Main Big Preview Container with Zoom & Click to Open Lightbox -->
+            <div class="relative aspect-square sm:aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-b from-stone-50 via-white to-stone-100/70 border border-stone-200/90 shadow-sm flex items-center justify-center group cursor-zoom-in" onclick="openImageLightbox()" title="Click image to open high-resolution big view">
+              
+              <!-- Subtle Background Ambient Pattern -->
+              <div class="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#78350f_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+              <!-- Main Image with Hover Scale -->
+              <img id="main-preview" src="workflows/assets/crimson_jaal.png" alt="SambalKe Crescent Hobo Bag" class="max-h-[85%] max-w-[85%] object-contain transition-transform duration-500 ease-out group-hover:scale-105 drop-shadow-md">
+
+              <!-- Floating Top Badges -->
+              <div class="absolute top-3 left-3 flex items-center gap-1.5 z-10">
+                <span id="preview-badge" class="bg-stone-900/85 backdrop-blur-md text-amber-200 text-xs px-3 py-1.5 rounded-xl font-bold tracking-wide shadow-md border border-white/10 flex items-center gap-1.5">
+                  <span>🌙</span> Crescent Hobo (13.5″ × 13.5″)
+                </span>
               </div>
 
-              <div onclick="selectProductVariant('konark_chakra')" id="thumb-card-konark_chakra" class="cursor-pointer border border-stone-200 rounded-xl p-2 bg-stone-50 flex flex-col items-center gap-1 transition-all opacity-75 hover:opacity-100 text-center">
-                <img src="workflows/assets/konark_chakra.png" class="w-14 h-14 object-contain rounded-lg border border-stone-200 bg-white">
-                <span class="text-[10px] font-bold text-stone-900 truncate w-full">Konark Chakra</span>
-                <span class="text-[9px] font-bold text-amber-900 bg-amber-100/70 px-1.5 py-0.5 rounded-full">Price on Request</span>
+              <!-- Floating Top Actions -->
+              <div class="absolute top-3 right-3 flex items-center gap-1.5 z-10" onclick="event.stopPropagation()">
+                <!-- Mark as Interested Toggle Button -->
+                <button type="button" id="main-btn-interested" onclick="toggleInterestedCurrent()" class="px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-md flex items-center gap-1.5 bg-white/95 hover:bg-white text-stone-800 border border-stone-200/80 backdrop-blur-md">
+                  <span id="main-heart-icon" class="text-sm">🤍</span>
+                  <span id="main-heart-label">Mark as Interested</span>
+                </button>
+
+                <!-- Fullscreen Zoom Trigger -->
+                <button type="button" onclick="openImageLightbox()" class="p-2 rounded-xl bg-stone-900/85 hover:bg-stone-900 text-white text-xs transition shadow-md backdrop-blur-md border border-white/10 flex items-center justify-center" title="Click to open big image in full-screen">
+                  🔍
+                </button>
               </div>
 
-              <div onclick="selectProductVariant('classic_passapalli')" id="thumb-card-classic_passapalli" class="cursor-pointer border border-stone-200 rounded-xl p-2 bg-stone-50 flex flex-col items-center gap-1 transition-all opacity-75 hover:opacity-100 text-center">
-                <img src="workflows/assets/classic_passapalli.png" class="w-14 h-14 object-contain rounded-lg border border-stone-200 bg-white">
-                <span class="text-[10px] font-bold text-stone-900 truncate w-full">Passapalli</span>
-                <span class="text-[9px] font-bold text-amber-900 bg-amber-100/70 px-1.5 py-0.5 rounded-full">Price on Request</span>
+              <!-- Floating Bottom Gradient Overlay with Instruction -->
+              <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-stone-950/80 via-stone-950/30 to-transparent p-3.5 pt-8 flex items-center justify-between text-white text-xs opacity-90 group-hover:opacity-100 transition-opacity">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                  <span class="font-medium text-stone-200 text-[11px]">Click image to view in <strong>High-Res Big Screen</strong></span>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-wider bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/20">
+                  🔍 Full Screen View
+                </span>
+              </div>
+            </div>
+
+            <!-- Dynamic Modern Thumbnail Selector -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-bold text-stone-700 flex items-center gap-1.5">
+                  <span>🎨</span> Select Weave Variant:
+                </span>
+                <span id="gallery-count-label" class="text-[10px] text-stone-500 font-mono">12 weaves available</span>
               </div>
 
-              <div onclick="selectProductVariant('van_katha')" id="thumb-card-van_katha" class="cursor-pointer border border-stone-200 rounded-xl p-2 bg-stone-50 flex flex-col items-center gap-1 transition-all opacity-75 hover:opacity-100 text-center">
-                <img src="workflows/assets/van_katha.png" class="w-14 h-14 object-contain rounded-lg border border-stone-200 bg-white">
-                <span class="text-[10px] font-bold text-stone-900 truncate w-full">Van Katha</span>
-                <span class="text-[9px] font-bold text-amber-900 bg-amber-100/70 px-1.5 py-0.5 rounded-full">Price on Request</span>
+              <div id="thumbnails-container" class="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                <!-- Dynamically generated modern thumbnails with heart status badges -->
               </div>
             </div>
 
             <!-- Dimensions Quick Banner -->
-            <div class="bg-stone-50 border border-stone-200 p-2.5 rounded-xl flex items-center justify-between text-xs text-stone-600">
+            <div class="bg-amber-50/60 border border-amber-200/70 p-3 rounded-xl flex items-center justify-between text-xs text-stone-700">
               <div class="flex items-center gap-2">
-                <span>📐</span>
-                <span class="font-mono text-[11px]"><strong>Size:</strong> 13.5″ × 13.5″ × 2.5″ (Belt: 21.5″)</span>
+                <span class="text-base">📐</span>
+                <span class="font-mono text-[11px]" id="display-dimension-spec"><strong>Dimensions:</strong> 13.5″ × 13.5″ × 2.5″ (Belt: 21.5″)</span>
               </div>
-              <span class="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded">Standard (One Size)</span>
+              <span id="display-fabric-badge" class="text-[10px] bg-white text-amber-900 font-bold px-2.5 py-1 rounded-lg border border-amber-200 shadow-xs">
+                Pure Handloom Ikat
+              </span>
             </div>
+
           </div>
 
           <!-- Product Details -->
@@ -230,6 +276,21 @@
             <div>
               <label class="block text-xs font-bold text-stone-700 mb-1">Customization / Weave Request</label>
               <textarea id="cust-notes" rows="2" placeholder="e.g. Need gift wrapping or specific border bandha" class="w-full px-3.5 py-2 text-xs rounded-xl bg-stone-50 border border-stone-200 text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-900"></textarea>
+            </div>
+
+            <!-- Interested Items Pill Banner -->
+            <div id="order-form-interested-box" class="hidden bg-rose-50/80 border border-rose-200/90 rounded-xl p-3 space-y-2 text-xs text-rose-950">
+              <div class="flex justify-between items-center">
+                <span class="font-bold flex items-center gap-1.5 text-rose-900">
+                  <span>❤️</span> Your Interested Items (<span id="form-interested-count">0</span>):
+                </span>
+                <button type="button" onclick="includeInterestedInNotes()" class="text-[10px] font-bold text-rose-800 underline hover:text-rose-950">
+                  Include in inquiry notes
+                </button>
+              </div>
+              <div id="form-interested-chips" class="flex flex-wrap gap-1">
+                <!-- Dynamically populated chips -->
+              </div>
             </div>
 
             <!-- Order Total Preview -->
@@ -595,9 +656,103 @@
       </div>
     </footer>
 
-    <!-- ====================================================================
-         ADMIN AUTHENTICATION MODAL (PASSWORD GATE)
-         ==================================================================== -->
+  <!-- ====================================================================
+       MODAL: FULL-SCREEN BIG IMAGE LIGHTBOX WITH "MARK AS INTERESTED"
+       ==================================================================== -->
+  <div id="image-lightbox-modal" class="hidden fixed inset-0 z-50 bg-stone-950/95 backdrop-blur-2xl flex flex-col justify-between p-3 sm:p-6 transition-all duration-300">
+    
+    <!-- Top Bar -->
+    <div class="flex justify-between items-center pb-3 border-b border-white/10 text-white z-20">
+      <div class="flex items-center gap-2.5 sm:gap-3">
+        <span id="lightbox-sku-badge" class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">SK-HBO-001</span>
+        <div>
+          <h3 id="lightbox-title" class="text-sm sm:text-base font-bold text-white tracking-wide font-serif-title">Crimson Jaal Crescent Hobo</h3>
+          <p id="lightbox-fabric" class="text-[11px] text-stone-400">Authentic Sambalpuri Double Ikat Bandha</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Mark as Interested Toggle in Lightbox -->
+        <button type="button" id="lightbox-btn-interested" onclick="toggleInterestedCurrent()" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition shadow-lg flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md">
+          <span id="lightbox-heart-icon">🤍</span>
+          <span id="lightbox-heart-label" class="hidden sm:inline">Mark as Interested</span>
+        </button>
+
+        <!-- Zoom Toggle -->
+        <button type="button" onclick="toggleLightboxZoom()" id="lightbox-zoom-btn" class="px-3 py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition flex items-center gap-1" title="Toggle Zoom In/Out">
+          <span>🔍</span> <span id="lightbox-zoom-text" class="hidden sm:inline">Zoom</span>
+        </button>
+
+        <!-- Close Button -->
+        <button type="button" onclick="closeImageLightbox()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center justify-center text-lg sm:text-xl font-bold transition" title="Close (Esc)">
+          &times;
+        </button>
+      </div>
+    </div>
+
+    <!-- Center Stage: Big Image with Navigation Arrows -->
+    <div class="relative flex-1 flex items-center justify-center p-2 sm:p-6 overflow-hidden">
+      
+      <!-- Previous Arrow -->
+      <button type="button" onclick="navigateLightbox(-1)" class="absolute left-2 sm:left-4 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 hover:bg-amber-600/80 text-white border border-white/20 backdrop-blur-md flex items-center justify-center text-xl transition shadow-xl" title="Previous Image (Left Arrow)">
+        &#10094;
+      </button>
+
+      <!-- Center Big Image Viewport -->
+      <div id="lightbox-viewport" class="relative max-w-full max-h-[66vh] sm:max-h-[72vh] flex items-center justify-center overflow-auto transition-transform duration-300">
+        <img id="lightbox-img" src="workflows/assets/crimson_jaal.png" alt="Big View" class="max-h-[64vh] sm:max-h-[70vh] max-w-full object-contain drop-shadow-2xl transition-transform duration-300 rounded-2xl cursor-zoom-in" onclick="toggleLightboxZoom()" title="Click to zoom in/out">
+      </div>
+
+      <!-- Next Arrow -->
+      <button type="button" onclick="navigateLightbox(1)" class="absolute right-2 sm:right-4 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 hover:bg-amber-600/80 text-white border border-white/20 backdrop-blur-md flex items-center justify-center text-xl transition shadow-xl" title="Next Image (Right Arrow)">
+        &#10095;
+      </button>
+
+    </div>
+
+    <!-- Bottom Controls & Ribbon -->
+    <div class="pt-3 border-t border-white/10 space-y-3 z-20">
+      
+      <!-- Action Bar & Details -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs">
+        <div class="text-stone-300">
+          <span id="lightbox-dimensions" class="font-mono text-[11px] text-amber-300 bg-amber-950/60 px-2.5 py-1 rounded-lg border border-amber-800/60">Size: 13.5″ × 13.5″ × 2.5″</span>
+          <span class="mx-2 text-stone-600">•</span>
+          <span id="lightbox-desc" class="text-stone-400 text-[11px] hidden md:inline">Authentic Sambalpuri double ikat bandha weave.</span>
+        </div>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <button type="button" onclick="inquireFromLightbox()" class="flex-1 sm:flex-none px-4 py-2 bg-amber-700 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-1.5">
+            <span>✉️</span> Submit Inquiry for this Bag
+          </button>
+          <button type="button" onclick="whatsappFromLightbox()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-1.5">
+            <span>💬</span> WhatsApp
+          </button>
+        </div>
+      </div>
+
+      <!-- Mini Thumbnail Ribbon inside Lightbox -->
+      <div id="lightbox-ribbon-container" class="flex items-center gap-2 overflow-x-auto py-1 scrollbar-thin">
+        <!-- Rendered dynamically by JavaScript -->
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Toast Notification for "Mark as Interested" -->
+  <div id="interested-toast" class="hidden fixed bottom-5 right-5 z-50 max-w-sm bg-stone-900/95 text-white border border-amber-700/50 p-4 rounded-2xl shadow-2xl backdrop-blur-xl flex items-center gap-3 transition-all duration-300">
+    <div id="toast-icon" class="text-2xl animate-bounce">❤️</div>
+    <div class="flex-1">
+      <h5 id="toast-title" class="text-xs font-bold text-amber-200">Marked as Interested</h5>
+      <p id="toast-msg" class="text-[11px] text-stone-300 mt-0.5">Added to your interested collection.</p>
+    </div>
+    <button onclick="hideToast()" class="text-stone-400 hover:text-white font-bold text-base">&times;</button>
+  </div>
+
+  <!-- ====================================================================
+       ADMIN AUTHENTICATION MODAL (PASSWORD GATE)
+       ==================================================================== -->
     <div id="admin-auth-modal" class="hidden fixed inset-0 z-50 bg-stone-950/80 backdrop-blur-sm flex items-center justify-center p-4">
       <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-stone-200 text-center space-y-4 animate-in fade-in zoom-in duration-200">
         <div class="w-14 h-14 bg-amber-100 text-amber-900 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-inner border border-amber-200">
@@ -630,40 +785,492 @@
     // State
     let currentVariant = 'crimson_jaal';
     let currentSize = 'L';
+    let currentGalleryFilter = 'all';
+    let lightboxCurrentVariant = 'crimson_jaal';
+    let isLightboxZoomed = false;
+    let lightboxIsOpen = false;
+
+    // Expanded Luxury Sambalpuri Weaves Catalog
     let bagVariants = {
       crimson_jaal: {
         id: 'SK-HBO-001',
+        category: 'hobo',
         title: 'Crimson Jaal Crescent Hobo',
         desc: 'Red and off-white geometric grid and jaal check ikat with top zip and detachable strap.',
+        fabric: 'Handloom Cotton Bandha',
+        dimensions: '13.5″ × 13.5″ × 2.5″ (Belt: 21.5″)',
         img: 'workflows/assets/crimson_jaal.png',
         badge: 'Crescent Hobo (13.5″ × 13.5″)',
         prices: { S: 1499, L: 1699, XL: 1899 }
       },
       konark_chakra: {
         id: 'SK-HBO-004',
+        category: 'hobo',
         title: 'Konark Chakra Crescent Hobo',
         desc: 'Heritage Konark Sun Temple chariot wheel motifs in earthy black, gold, and red bandha.',
+        fabric: 'Handwoven Odisha Bandha',
+        dimensions: '13.5″ × 13.5″ × 2.5″ (Belt: 21.5″)',
         img: 'workflows/assets/konark_chakra.png',
         badge: 'Konark Heritage Weave',
         prices: { S: 1699, L: 1899, XL: 2099 }
       },
       classic_passapalli: {
         id: 'SK-HBO-005',
+        category: 'hobo',
         title: 'Classic Passapalli Crescent Hobo',
         desc: 'Timeless Odisha chessboard check bandha in bold red, black, and emerald green.',
+        fabric: 'Sambalpuri Passapalli Handloom',
+        dimensions: '13.5″ × 13.5″ × 2.5″ (Belt: 21.5″)',
         img: 'workflows/assets/classic_passapalli.png',
         badge: 'Passapalli Chessboard',
         prices: { S: 1599, L: 1799, XL: 1999 }
       },
       van_katha: {
         id: 'SK-HBO-011',
+        category: 'hobo',
         title: 'Van Katha Crescent Hobo',
         desc: 'Forest folklore wildlife weave featuring elephants, tigers, and wildlife ikat motifs.',
+        fabric: 'Wildlife Folklore Ikat',
+        dimensions: '13.5″ × 13.5″ × 2.5″ (Belt: 21.5″)',
         img: 'workflows/assets/van_katha.png',
         badge: 'Forest Story Bandha',
         prices: { S: 1699, L: 1899, XL: 2099 }
+      },
+      regal_bloom: {
+        id: 'SK-HBO-002',
+        category: 'hobo',
+        title: 'Regal Bloom Crescent Hobo',
+        desc: 'Deep magenta-pink traditional Sambalpuri floral bandha motif weave.',
+        fabric: 'Handwoven Cotton Bandha',
+        dimensions: '13.5″ × 13.5″ × 2.5″ (Belt: 21.5″)',
+        img: 'workflows/assets/regal_bloom.png',
+        badge: 'Floral Bandha Weave',
+        prices: { S: 1499, L: 1699, XL: 1899 }
+      },
+      floral_duet: {
+        id: 'SK-HBO-003',
+        category: 'hobo',
+        title: 'Floral Duet Crescent Hobo',
+        desc: 'Rich indigo blue field accented with bright yellow floral ikat motifs.',
+        fabric: 'Pure Handloom Cotton',
+        dimensions: '13.5″ × 13.5″ × 2.5″ (Belt: 21.5″)',
+        img: 'workflows/assets/floral_duet.png',
+        badge: 'Indigo Floral Ikat',
+        prices: { S: 1499, L: 1699, XL: 1899 }
+      },
+      gramya_crescent: {
+        id: 'SK-HBO-006',
+        category: 'hobo',
+        title: 'Gramya Crescent Hobo',
+        desc: 'Tribal village life folk motifs handwoven in authentic Sambalpuri loom.',
+        fabric: 'Tribal Heritage Bandha',
+        dimensions: '13.5″ × 13.5″ × 2.5″ (Belt: 21.5″)',
+        img: 'workflows/assets/gramya_crescent.png',
+        badge: 'Folk Heritage Weave',
+        prices: { S: 1599, L: 1799, XL: 1999 }
+      },
+      other_backpack: {
+        id: 'SK-OTH-001',
+        category: 'daily',
+        title: 'Sambalpuri Handloom Backpack',
+        desc: 'Padded everyday daypack in peach ikat with ergonomic shoulder straps.',
+        fabric: '100% Cotton Handloom',
+        dimensions: '15″ × 12″ × 5″',
+        img: 'workflows/assets/other_backpack.png',
+        badge: 'Daily Daypack (15″ × 12″)',
+        prices: { S: 1699, L: 1899, XL: 2099 }
+      },
+      other_mobile_pouch: {
+        id: 'SK-OTH-002',
+        category: 'daily',
+        title: 'Mobile Pouch Sling Bag',
+        desc: 'Sleek vertical mobile pouch with magnetic lock and card slots.',
+        fabric: 'Handloom Cotton Bandha',
+        dimensions: '7.5″ × 4.5″ × 1.5″',
+        img: 'workflows/assets/other_mobile_pouch.png',
+        badge: 'Mobile Sling (7.5″ × 4.5″)',
+        prices: { S: 499, L: 599, XL: 699 }
+      },
+      other_potlis: {
+        id: 'SK-OTH-003',
+        category: 'daily',
+        title: 'Festive Traditional Potlis',
+        desc: 'Silk-velvet handcrafted potli bag with gold zari thread drawstrings.',
+        fabric: 'Silk-Velvet Blend',
+        dimensions: '9″ × 8″',
+        img: 'workflows/assets/other_potlis.png',
+        badge: 'Festive Potli (9″ × 8″)',
+        prices: { S: 799, L: 899, XL: 999 }
+      },
+      sambalpuri_tote_bag: {
+        id: 'SK-OTH-004',
+        category: 'daily',
+        title: 'Sambalpuri Artisanal Tote Bag',
+        desc: 'Spacious daily tote crafted with geometric black and off-white ikat bandha.',
+        fabric: 'Pure Cotton Ikat',
+        dimensions: '14″ × 13″ × 4″',
+        img: 'workflows/assets/sambalpuri_tote_bag.jpg',
+        badge: 'Artisanal Tote (14″ × 13″)',
+        prices: { S: 1399, L: 1599, XL: 1799 }
+      },
+      sambalpuri_laptop_bag: {
+        id: 'SK-OTH-005',
+        category: 'daily',
+        title: 'Padded Handloom Laptop Bag',
+        desc: 'Quilted protection for 14-15 inch laptops with pure Sambalpuri handloom cover.',
+        fabric: 'Quilted Ikat Cotton',
+        dimensions: '15.5″ × 11″ × 1.5″',
+        img: 'workflows/assets/sambalpuri_laptop_bag.jpg',
+        badge: 'Laptop Sleeve (15.5″ × 11″)',
+        prices: { S: 1799, L: 1999, XL: 2199 }
       }
     };
+
+    // User Wishlist / "Marked as Interested" state
+    let userInterested = [];
+    try {
+      userInterested = JSON.parse(localStorage.getItem('sambalke_user_interested') || '[]');
+    } catch(e) { userInterested = []; }
+
+    function isInterested(key) {
+      return userInterested.includes(key);
+    }
+
+    function toggleInterested(key) {
+      if (!key || !bagVariants[key]) return;
+      const title = bagVariants[key].title;
+      const idx = userInterested.indexOf(key);
+
+      if (idx >= 0) {
+        userInterested.splice(idx, 1);
+        showToast('🤍 Removed', `"${title}" removed from your interested list.`);
+      } else {
+        userInterested.push(key);
+        showToast('❤️ Added to Interested', `"${title}" saved! We will include it in your price quote.`);
+      }
+
+      localStorage.setItem('sambalke_user_interested', JSON.stringify(userInterested));
+      updateInterestedUI();
+    }
+
+    function toggleInterestedCurrent() {
+      const target = (lightboxIsOpen ? lightboxCurrentVariant : currentVariant);
+      toggleInterested(target);
+    }
+
+    function updateInterestedUI() {
+      // 1. Counter badge
+      const count = userInterested.length;
+      const countBadge = document.getElementById('interested-counter-badge');
+      if (countBadge) countBadge.innerText = count;
+
+      // 2. Main card heart button
+      const isCurrInterested = isInterested(currentVariant);
+      const mainBtn = document.getElementById('main-btn-interested');
+      const heartIcon = document.getElementById('main-heart-icon');
+      const heartLabel = document.getElementById('main-heart-label');
+
+      if (mainBtn && heartIcon && heartLabel) {
+        if (isCurrInterested) {
+          mainBtn.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-md flex items-center gap-1.5 bg-rose-600 text-white border border-rose-500 shadow-rose-200 animate-pulse";
+          heartIcon.innerText = "❤️";
+          heartLabel.innerText = "Marked as Interested";
+        } else {
+          mainBtn.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-md flex items-center gap-1.5 bg-white/95 hover:bg-white text-stone-800 border border-stone-200/80 backdrop-blur-md";
+          heartIcon.innerText = "🤍";
+          heartLabel.innerText = "Mark as Interested";
+        }
+      }
+
+      // 3. Lightbox heart button
+      const isLbInterested = isInterested(lightboxCurrentVariant);
+      const lbBtn = document.getElementById('lightbox-btn-interested');
+      const lbIcon = document.getElementById('lightbox-heart-icon');
+      const lbLabel = document.getElementById('lightbox-heart-label');
+
+      if (lbBtn && lbIcon && lbLabel) {
+        if (isLbInterested) {
+          lbBtn.className = "px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition shadow-lg flex items-center gap-1.5 bg-rose-600 text-white border border-rose-400";
+          lbIcon.innerText = "❤️";
+          lbLabel.innerText = "Marked as Interested";
+        } else {
+          lbBtn.className = "px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition shadow-lg flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md";
+          lbIcon.innerText = "🤍";
+          lbLabel.innerText = "Mark as Interested";
+        }
+      }
+
+      // 4. Order form interested items box
+      renderOrderFormInterestedBox();
+
+      // 5. Thumbnails & Lightbox Ribbon
+      renderThumbnails();
+      renderLightboxRibbon();
+    }
+
+    // Category Filter in Gallery
+    function filterGalleryCategory(cat) {
+      currentGalleryFilter = cat;
+      ['all', 'hobo', 'daily', 'interested'].forEach(c => {
+        const btn = document.getElementById(`gallery-tab-${c}`);
+        if (btn) {
+          if (c === cat) {
+            btn.className = c === 'interested' 
+              ? "px-3 py-1.5 rounded-xl border border-rose-400 bg-rose-600 text-white font-bold transition flex items-center gap-1.5 shrink-0 shadow-sm"
+              : "px-3 py-1.5 rounded-lg font-bold transition text-xs bg-amber-900 text-white shadow-xs whitespace-nowrap";
+          } else {
+            btn.className = c === 'interested'
+              ? "px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold transition flex items-center gap-1.5 shrink-0 shadow-xs whitespace-nowrap"
+              : "px-3 py-1.5 rounded-lg font-semibold transition text-xs text-stone-600 hover:text-stone-900 whitespace-nowrap";
+          }
+        }
+      });
+
+      renderThumbnails();
+    }
+
+    function getFilteredVariantKeys() {
+      const allKeys = Object.keys(bagVariants);
+      if (currentGalleryFilter === 'hobo') {
+        return allKeys.filter(k => bagVariants[k].category === 'hobo');
+      } else if (currentGalleryFilter === 'daily') {
+        return allKeys.filter(k => bagVariants[k].category === 'daily');
+      } else if (currentGalleryFilter === 'interested') {
+        return allKeys.filter(k => userInterested.includes(k));
+      }
+      return allKeys;
+    }
+
+    // Render Modern Thumbnail Cards
+    function renderThumbnails() {
+      const container = document.getElementById('thumbnails-container');
+      if (!container) return;
+
+      const keys = getFilteredVariantKeys();
+      const countLabel = document.getElementById('gallery-count-label');
+      if (countLabel) countLabel.innerText = `${keys.length} weave${keys.length === 1 ? '' : 's'} displayed`;
+
+      if (keys.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-6 text-center text-xs text-stone-500 bg-stone-50 rounded-xl border border-dashed border-stone-300">
+            ${currentGalleryFilter === 'interested' ? 'You have not marked any bags as interested yet. Click the ❤️ on any bag to save it here!' : 'No weaves in this category.'}
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = keys.map(k => {
+        const v = bagVariants[k];
+        const isActive = (k === currentVariant);
+        const isInt = isInterested(k);
+
+        return `
+          <div onclick="selectProductVariant('${k}')" class="relative cursor-pointer rounded-xl p-2 flex flex-col items-center gap-1 transition-all text-center group ${
+            isActive
+              ? 'border-2 border-amber-900 bg-amber-50/80 shadow-md ring-2 ring-amber-900/20'
+              : 'border border-stone-200 bg-stone-50/60 hover:bg-white hover:border-amber-700/60 shadow-xs'
+          }">
+            <div class="relative w-full aspect-square bg-white rounded-lg border border-stone-100 flex items-center justify-center p-1 overflow-hidden">
+              <img src="${v.img}" alt="${v.title}" class="max-h-full max-w-full object-contain transition-transform group-hover:scale-110 duration-300">
+              
+              <!-- Quick Zoom Button to open full-screen big image directly -->
+              <button type="button" onclick="event.stopPropagation(); openImageLightbox('${k}')" class="absolute top-1 left-1 w-6 h-6 rounded-md bg-stone-900/75 hover:bg-stone-900 text-white flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition shadow-sm z-10" title="Open in Big Screen View">
+                🔍
+              </button>
+
+              <!-- Quick Heart / Mark as Interested Button -->
+              <button type="button" onclick="event.stopPropagation(); toggleInterested('${k}')" class="absolute top-1 right-1 w-6 h-6 rounded-md flex items-center justify-center text-xs transition z-10 ${
+                isInt ? 'bg-rose-600 text-white shadow-sm' : 'bg-white/80 hover:bg-white text-stone-400 hover:text-rose-600 shadow-xs opacity-0 group-hover:opacity-100'
+              }" title="${isInt ? 'Marked as Interested (Click to remove)' : 'Mark as Interested'}">
+                ${isInt ? '❤️' : '🤍'}
+              </button>
+            </div>
+            <span class="text-[10px] font-bold text-stone-900 truncate w-full mt-0.5">${v.title.replace(' Crescent Hobo', '')}</span>
+            <span class="text-[9px] font-bold text-amber-900 bg-amber-100/70 px-1.5 py-0.2 rounded-full">Price on Request</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ====================================================================
+    // FULL-SCREEN BIG IMAGE LIGHTBOX MODAL
+    // ====================================================================
+    function openImageLightbox(key) {
+      lightboxIsOpen = true;
+      lightboxCurrentVariant = key || currentVariant;
+      isLightboxZoomed = false;
+
+      renderLightboxContent();
+      document.getElementById('image-lightbox-modal').classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function closeImageLightbox() {
+      lightboxIsOpen = false;
+      document.getElementById('image-lightbox-modal').classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+      isLightboxZoomed = false;
+      resetLightboxZoom();
+    }
+
+    function renderLightboxContent() {
+      const v = bagVariants[lightboxCurrentVariant];
+      if (!v) return;
+
+      document.getElementById('lightbox-img').src = v.img;
+      document.getElementById('lightbox-title').innerText = v.title;
+      document.getElementById('lightbox-sku-badge').innerText = v.id;
+      document.getElementById('lightbox-fabric').innerText = v.fabric || 'Authentic Sambalpuri Ikat Bandha';
+      document.getElementById('lightbox-dimensions').innerText = `Size: ${v.dimensions || '13.5″ × 13.5″ × 2.5″'}`;
+      document.getElementById('lightbox-desc').innerText = v.desc || '';
+
+      updateInterestedUI();
+      renderLightboxRibbon();
+    }
+
+    function navigateLightbox(dir) {
+      const keys = getFilteredVariantKeys();
+      if (keys.length === 0) return;
+      let idx = keys.indexOf(lightboxCurrentVariant);
+      if (idx === -1) idx = 0;
+      let nextIdx = (idx + dir + keys.length) % keys.length;
+      lightboxCurrentVariant = keys[nextIdx];
+      selectProductVariant(lightboxCurrentVariant);
+      isLightboxZoomed = false;
+      resetLightboxZoom();
+      renderLightboxContent();
+    }
+
+    function toggleLightboxZoom() {
+      isLightboxZoomed = !isLightboxZoomed;
+      const img = document.getElementById('lightbox-img');
+      const zoomText = document.getElementById('lightbox-zoom-text');
+      if (isLightboxZoomed) {
+        img.classList.add('scale-150', 'cursor-zoom-out');
+        img.classList.remove('cursor-zoom-in');
+        if (zoomText) zoomText.innerText = "100%";
+      } else {
+        resetLightboxZoom();
+      }
+    }
+
+    function resetLightboxZoom() {
+      const img = document.getElementById('lightbox-img');
+      const zoomText = document.getElementById('lightbox-zoom-text');
+      if (img) {
+        img.classList.remove('scale-150', 'cursor-zoom-out');
+        img.classList.add('cursor-zoom-in');
+      }
+      if (zoomText) zoomText.innerText = "Zoom";
+    }
+
+    function renderLightboxRibbon() {
+      const ribbon = document.getElementById('lightbox-ribbon-container');
+      if (!ribbon) return;
+      const keys = getFilteredVariantKeys();
+      ribbon.innerHTML = keys.map(k => {
+        const v = bagVariants[k];
+        const isCurrent = (k === lightboxCurrentVariant);
+        const isInt = isInterested(k);
+        return `
+          <button type="button" onclick="lightboxSelectVariant('${k}')" class="relative w-12 h-12 rounded-lg p-1 bg-white/10 hover:bg-white/20 transition shrink-0 border ${
+            isCurrent ? 'border-amber-400 ring-2 ring-amber-400/60 bg-white/25' : 'border-white/10'
+          }">
+            <img src="${v.img}" alt="${v.title}" class="w-full h-full object-contain">
+            ${isInt ? `<span class="absolute -top-1 -right-1 text-[10px]">❤️</span>` : ''}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function lightboxSelectVariant(key) {
+      lightboxCurrentVariant = key;
+      selectProductVariant(key);
+      isLightboxZoomed = false;
+      resetLightboxZoom();
+      renderLightboxContent();
+    }
+
+    function inquireFromLightbox() {
+      selectProductVariant(lightboxCurrentVariant);
+      closeImageLightbox();
+      const orderSec = document.getElementById('order-form');
+      if (orderSec) {
+        orderSec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => {
+          const nameInput = document.getElementById('cust-name');
+          if (nameInput) nameInput.focus();
+        }, 500);
+      }
+    }
+
+    function whatsappFromLightbox() {
+      const v = bagVariants[lightboxCurrentVariant];
+      const text = `Hello SambalKe Handlooms! I am viewing your collection and am interested in:\n\n*${v.title}* (${v.id})\n• Dimensions: ${v.dimensions || 'Standard'}\n\nPlease share the official price quote and availability with me.`;
+      window.open(`https://wa.me/919876543210?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    // Keyboard controls for Lightbox
+    window.addEventListener('keydown', (e) => {
+      if (!lightboxIsOpen) return;
+      if (e.key === 'Escape') closeImageLightbox();
+      else if (e.key === 'ArrowLeft') navigateLightbox(-1);
+      else if (e.key === 'ArrowRight') navigateLightbox(1);
+    });
+
+    // Toast Notification
+    let toastTimeout = null;
+    function showToast(title, msg) {
+      const toast = document.getElementById('interested-toast');
+      if (!toast) return;
+      document.getElementById('toast-title').innerText = title;
+      document.getElementById('toast-msg').innerText = msg;
+      toast.classList.remove('hidden');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => hideToast(), 4000);
+    }
+
+    function hideToast() {
+      const toast = document.getElementById('interested-toast');
+      if (toast) toast.classList.add('hidden');
+    }
+
+    // Order Form Interested Box
+    function renderOrderFormInterestedBox() {
+      const box = document.getElementById('order-form-interested-box');
+      const countEl = document.getElementById('form-interested-count');
+      const chips = document.getElementById('form-interested-chips');
+      if (!box || !countEl || !chips) return;
+
+      if (userInterested.length === 0) {
+        box.classList.add('hidden');
+        return;
+      }
+
+      box.classList.remove('hidden');
+      countEl.innerText = userInterested.length;
+      chips.innerHTML = userInterested.map(k => {
+        const v = bagVariants[k];
+        const name = v ? v.title.replace(' Crescent Hobo', '') : k;
+        return `
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-rose-800 border border-rose-200 shadow-xs">
+            <span>❤️</span> ${name}
+            <button type="button" onclick="toggleInterested('${k}')" class="text-rose-500 hover:text-rose-900 ml-0.5">&times;</button>
+          </span>
+        `;
+      }).join('');
+    }
+
+    function includeInterestedInNotes() {
+      const notes = document.getElementById('cust-notes');
+      if (!notes) return;
+      const names = userInterested.map(k => bagVariants[k] ? bagVariants[k].title : k).join(', ');
+      const addition = `Also interested in quotes for: ${names}.`;
+      if (!notes.value.includes(names)) {
+        notes.value = notes.value ? `${notes.value}\n${addition}` : addition;
+        showToast('📝 Notes Updated', 'Your interested bags were added to your customization notes!');
+      }
+    }
 
     let prices = { S: 1499, L: 1699, XL: 1899 };
     let orders = JSON.parse(localStorage.getItem('saved_sambalke_orders') || '[]');
@@ -774,45 +1381,43 @@
     function selectProductVariant(key) {
       currentVariant = key;
       const v = bagVariants[key];
+      if (!v) return;
 
       document.getElementById('main-preview').src = v.img;
-      document.getElementById('preview-badge').innerText = v.badge;
+      document.getElementById('preview-badge').innerHTML = `<span>🌙</span> ${v.badge}`;
       document.getElementById('display-sku').innerText = v.id;
       document.getElementById('display-title').innerText = v.title;
       document.getElementById('display-desc').innerText = v.desc;
 
+      const dimSpec = document.getElementById('display-dimension-spec');
+      if (dimSpec) dimSpec.innerHTML = `<strong>Dimensions:</strong> ${v.dimensions || '13.5″ × 13.5″ × 2.5″'}`;
+
+      const fabBadge = document.getElementById('display-fabric-badge');
+      if (fabBadge) fabBadge.innerText = v.fabric || 'Pure Handloom Ikat';
+
       // Update Variant Prices
       prices = { ...v.prices };
-      document.getElementById('input-price-S').value = prices.S;
-      document.getElementById('input-price-L').value = prices.L;
-      document.getElementById('input-price-XL').value = prices.XL;
+      if (document.getElementById('input-price-S')) document.getElementById('input-price-S').value = prices.S;
+      if (document.getElementById('input-price-L')) document.getElementById('input-price-L').value = prices.L;
+      if (document.getElementById('input-price-XL')) document.getElementById('input-price-XL').value = prices.XL;
       updatePricingConfig();
 
-      // Update thumbnail borders
-      ['crimson_jaal', 'konark_chakra', 'classic_passapalli', 'van_katha'].forEach(k => {
-        const card = document.getElementById(`thumb-card-${k}`);
-        if (card) {
-          if (k === key) {
-            card.classList.remove('border-stone-200', 'opacity-75');
-            card.classList.add('border-2', 'border-amber-900', 'opacity-100');
-          } else {
-            card.classList.remove('border-2', 'border-amber-900', 'opacity-100');
-            card.classList.add('border-stone-200', 'opacity-75');
-          }
-        }
-      });
+      updateInterestedUI();
+      updateOrderSummary();
     }
 
     function selectSize(size) {
       currentSize = size;
       ['S', 'L', 'XL'].forEach(s => {
         const btn = document.getElementById(`size-btn-${s}`);
-        if (s === size) {
-          btn.classList.remove('border-stone-200', 'bg-stone-50');
-          btn.classList.add('border-2', 'border-amber-900', 'bg-amber-50/50');
-        } else {
-          btn.classList.remove('border-2', 'border-amber-900', 'bg-amber-50/50');
-          btn.classList.add('border-stone-200', 'bg-stone-50');
+        if (btn) {
+          if (s === size) {
+            btn.classList.remove('border-stone-200', 'bg-stone-50');
+            btn.classList.add('border-2', 'border-amber-900', 'bg-amber-50/50');
+          } else {
+            btn.classList.remove('border-2', 'border-amber-900', 'bg-amber-50/50');
+            btn.classList.add('border-stone-200', 'bg-stone-50');
+          }
         }
       });
       updateOrderSummary();
@@ -888,6 +1493,7 @@
       const notes = document.getElementById('cust-notes').value.trim() || 'None';
       const unitPrice = prices[currentSize] || 1699;
       const total = unitPrice * qty;
+      const interestedTitles = userInterested.map(k => bagVariants[k] ? bagVariants[k].title : k);
 
       return {
         id: 'INQ-' + Date.now().toString().slice(-4),
@@ -901,7 +1507,8 @@
         unitPrice,
         total,
         address,
-        notes
+        notes,
+        interested: interestedTitles
       };
     }
 
@@ -912,6 +1519,10 @@
       localStorage.setItem('saved_sambalke_orders', JSON.stringify(orders));
       renderOrders();
 
+      const interestedMsg = (payload.interested && payload.interested.length > 0)
+        ? `\n• *Also Marked Interested In:* ${payload.interested.join(', ')}`
+        : '';
+
       const text = `🛍️ *SAMBALKE HANDLOOM ORDER INQUIRY*\n\n` +
         `• *Ref:* ${payload.id}\n` +
         `• *Customer:* ${payload.name}\n` +
@@ -921,12 +1532,12 @@
         `• *Size:* ${payload.size}\n` +
         `• *Quantity:* ${payload.qty}\n` +
         `• *City/Address:* ${payload.address}\n` +
-        `• *Note:* ${payload.notes}\n\n` +
+        `• *Note:* ${payload.notes}${interestedMsg}\n\n` +
         `_Please send me the price quotation and confirmation via email (${payload.email}) or WhatsApp._`;
 
       const waUrl = `https://wa.me/919876543210?text=${encodeURIComponent(text)}`;
       window.open(waUrl, '_blank');
-      alert(`Inquiry ${payload.id} received!\n\nThank you, ${payload.name}! Our team will send the official price quotation and order details directly to your email (${payload.email}).`);
+      alert(`Inquiry ${payload.id} received!\n\nThank you, ${payload.name}! Our team will send the official price quotation for "${payload.product}"${payload.interested && payload.interested.length > 0 ? ` and your ${payload.interested.length} interested bag(s)` : ''} directly to your email (${payload.email}).`);
     }
 
     function saveOrderLocally() {
@@ -940,7 +1551,7 @@
       orders.unshift(payload);
       localStorage.setItem('saved_sambalke_orders', JSON.stringify(orders));
       renderOrders();
-      alert(`Inquiry ${payload.id} saved! Price will be quoted to ${payload.email || 'customer'}.`);
+      alert(`Inquiry ${payload.id} saved! Price quotation will be sent to ${payload.email || 'customer'}.`);
     }
 
     function renderOrders() {
@@ -961,6 +1572,10 @@
 
       tbody.innerHTML = orders.map(o => {
         const mailtoSubject = encodeURIComponent(`Price Quotation: ${o.product} - SambalKe Handlooms`);
+        const interestedNote = (o.interested && o.interested.length > 0)
+          ? `\n• Also Interested In: ${o.interested.join(', ')} (Quotation included for these models as well)\n`
+          : '';
+
         const mailtoBody = encodeURIComponent(
           `Dear ${o.name},\n\n` +
           `Thank you for your interest in SambalKe Handlooms and our authentic Odisha handwoven collection!\n\n` +
@@ -969,6 +1584,7 @@
           `• Size: ${o.size}\n` +
           `• Quantity: ${o.qty}\n` +
           `• Price: ₹${(o.total || (o.unitPrice * o.qty) || 1699).toLocaleString('en-IN')}\n` +
+          `${interestedNote}` +
           `• Shipping/Delivery: Free across India\n\n` +
           `To confirm this order, simply reply to this email or reach us on WhatsApp at +91 98765 43210.\n\n` +
           `Warm regards,\n` +
@@ -990,6 +1606,11 @@
             <td class="py-2.5 px-3">
               <span class="font-medium text-stone-800">${o.product}</span>
               <span class="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200">Size ${o.size} × ${o.qty}</span>
+              ${o.interested && o.interested.length > 0 ? `
+                <div class="mt-1 text-[10px] text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 flex items-center gap-1">
+                  <span>❤️</span> <span class="font-semibold truncate max-w-[180px]">Interested: ${o.interested.join(', ')}</span>
+                </div>
+              ` : ''}
             </td>
             <td class="py-2.5 px-3 font-bold text-amber-900 font-mono">₹${(o.total || (o.unitPrice * o.qty) || 1699).toLocaleString('en-IN')}</td>
             <td class="py-2.5 px-3">
@@ -1010,7 +1631,7 @@
         return;
       }
 
-      const headers = ["Inquiry ID", "Date", "Customer Name", "Email", "Phone", "Product", "Size", "Quantity", "Admin Quoted Price (INR)", "Delivery Address", "Notes"];
+      const headers = ["Inquiry ID", "Date", "Customer Name", "Email", "Phone", "Product", "Size", "Quantity", "Admin Quoted Price (INR)", "Interested Items", "Delivery Address", "Notes"];
       const rows = orders.map(o => [
         o.id,
         `"${o.date}"`,
@@ -1021,6 +1642,7 @@
         o.size,
         o.qty,
         o.total || (o.unitPrice * o.qty) || 1699,
+        `"${(o.interested || []).join('; ')}"`,
         `"${o.address.replace(/"/g, '""')}"`,
         `"${o.notes.replace(/"/g, '""')}"`
       ]);
@@ -1325,6 +1947,8 @@
     updateAdminLockUI();
     calculateCosts();
     renderOrders();
+    renderThumbnails();
+    updateInterestedUI();
     updateOrderSummary();
     renderStorefrontTaxonomyDropdowns();
   </script>

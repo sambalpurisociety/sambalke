@@ -686,11 +686,12 @@
         </a>
       </div>
     </footer>
+  </div>
 
   <!-- ====================================================================
        MODAL: BIG PRODUCT 3D INTERACTIVE STUDIO & MULTI-INTEREST SHOWCASE
        ==================================================================== -->
-  <div id="image-lightbox-modal" class="hidden fixed inset-0 z-50 bg-stone-950/95 backdrop-blur-2xl flex flex-col justify-between p-3 sm:p-5 transition-all duration-300 overflow-y-auto">
+  <div id="image-lightbox-modal" onclick="if(event.target === this) closeImageLightbox()" class="hidden fixed inset-0 z-[99999] bg-stone-950/95 backdrop-blur-2xl flex flex-col justify-between p-3 sm:p-5 transition-all duration-300 overflow-y-auto">
     
     <!-- Top Bar: Product Identity, 3D Mode Switcher & Heart Wishlist -->
     <div class="flex flex-wrap justify-between items-center gap-3 pb-3 border-b border-white/10 text-white shrink-0 z-20">
@@ -717,10 +718,10 @@
 
       <!-- Center: View Mode Switcher (3D vs 2D vs Google AR) -->
       <div class="flex items-center p-1 bg-white/10 rounded-xl border border-white/15 backdrop-blur-md text-xs font-bold">
-        <button type="button" id="btn-mode-3d" onclick="switchLightboxMode('3d')" class="px-3 py-1.5 rounded-lg bg-amber-600 text-white shadow-sm transition flex items-center gap-1.5">
+        <button type="button" id="btn-mode-3d" onclick="switchLightboxMode('3d')" class="px-3 py-1.5 rounded-lg text-stone-300 hover:text-white transition flex items-center gap-1.5">
           <span>🌟</span> 3D Angle Studio
         </button>
-        <button type="button" id="btn-mode-2d" onclick="switchLightboxMode('2d')" class="px-3 py-1.5 rounded-lg text-stone-300 hover:text-white transition flex items-center gap-1.5">
+        <button type="button" id="btn-mode-2d" onclick="switchLightboxMode('2d')" class="px-3 py-1.5 rounded-lg bg-amber-600 text-white shadow-sm transition flex items-center gap-1.5">
           <span>🖼️</span> Ultra-HD Photo
         </button>
         <button type="button" id="btn-mode-ar" onclick="switchLightboxMode('ar')" class="px-3 py-1.5 rounded-lg text-stone-300 hover:text-white transition hidden sm:flex items-center gap-1.5" title="Google Model-Viewer 3D / AR">
@@ -757,7 +758,7 @@
       </button>
 
       <!-- VIEW 1: 3D ANGLE STUDIO (Three.js WebGL & Angle Slider) -->
-      <div id="lightbox-3d-stage" class="w-full h-full flex flex-col items-center justify-center relative">
+      <div id="lightbox-3d-stage" class="hidden w-full h-full flex flex-col items-center justify-center relative">
         
         <!-- 3D Canvas Viewport -->
         <div id="three-canvas-container" class="relative w-full max-w-2xl h-[280px] sm:h-[350px] md:h-[390px] flex items-center justify-center cursor-grab active:cursor-grabbing">
@@ -822,7 +823,7 @@
       </div>
 
       <!-- VIEW 2: ULTRA-HD 2D PHOTO ZOOM VIEW -->
-      <div id="lightbox-2d-stage" class="hidden w-full h-full flex flex-col items-center justify-center">
+      <div id="lightbox-2d-stage" class="w-full h-full flex flex-col items-center justify-center">
         <div id="lightbox-viewport" class="relative max-w-full max-h-[60vh] sm:max-h-[66vh] flex items-center justify-center overflow-auto transition-transform duration-300">
           <img id="lightbox-img" src="workflows/assets/crimson_jaal.png" alt="Big View" class="max-h-[58vh] sm:max-h-[64vh] max-w-full object-contain drop-shadow-2xl transition-transform duration-300 rounded-2xl cursor-zoom-in" onclick="toggleLightboxZoom()" title="Click to zoom in 150%">
         </div>
@@ -947,8 +948,6 @@
         <p class="text-[10px] text-stone-400">Default initial password: <code class="font-bold text-stone-600">sambalke@2026</code></p>
       </div>
     </div>
-
-  </div>
 
   <script>
     // State
@@ -1160,9 +1159,13 @@
     let currentAngleDeg = 0;
     let currentTiltDeg = 0;
     let currentZoomScale = 1.0;
-    let currentModalViewMode = '3d'; // '3d', '2d', or 'ar'
+    let currentModalViewMode = '2d'; // '2d', '3d', or 'ar' - default to 2d for reliability
 
     function initThree3DStudio() {
+      if (typeof THREE === 'undefined') {
+        console.warn("Three.js library is not yet loaded");
+        return;
+      }
       const container = document.getElementById('three-canvas-container');
       if (!container) return;
 
@@ -1519,10 +1522,15 @@
         if (btn2D) btn2D.className = "px-3 py-1.5 rounded-lg text-stone-300 hover:text-white transition flex items-center gap-1.5";
         if (btnAR) btnAR.className = "px-3 py-1.5 rounded-lg text-stone-300 hover:text-white transition hidden sm:flex items-center gap-1.5";
 
-        initThree3DStudio();
-        onThreeResize();
-        const v = bagVariants[lightboxCurrentVariant];
-        if (v) update3DBagTexture(v.img);
+        try {
+          initThree3DStudio();
+          onThreeResize();
+          const v = bagVariants[lightboxCurrentVariant];
+          if (v) update3DBagTexture(v.img);
+        } catch (err) {
+          console.warn("Could not load 3D studio, falling back to 2D view", err);
+          switchLightboxMode('2d');
+        }
       } else if (mode === '2d') {
         if (stage3D) stage3D.classList.add('hidden');
         if (stage2D) stage2D.classList.remove('hidden');
@@ -1563,20 +1571,28 @@
 
       renderLightboxContent();
       const modal = document.getElementById('image-lightbox-modal');
-      if (modal) modal.classList.remove('hidden');
-      document.body.classList.add('overflow-hidden');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+      }
+      document.body.style.overflow = 'hidden';
 
+      // Default to 2D big image view (always works reliably)
+      // User can switch to 3D after modal is visible
       setTimeout(() => {
-        switchLightboxMode(currentModalViewMode || '3d');
-      }, 80);
+        switchLightboxMode(currentModalViewMode || '2d');
+      }, 50);
     }
     const openImageLightbox = openBigProductModal; // backward-compatibility alias
 
     function closeImageLightbox() {
       lightboxIsOpen = false;
       const modal = document.getElementById('image-lightbox-modal');
-      if (modal) modal.classList.add('hidden');
-      document.body.classList.remove('overflow-hidden');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+      }
+      document.body.style.overflow = '';
       isLightboxZoomed = false;
       resetLightboxZoom();
       isAutoRotating = false;

@@ -1,0 +1,11 @@
+{
+  "name": "sambalke-studio",
+  "version": "2.0.0",
+  "private": true,
+  "description": "SambalKe Handlooms - Luxury Sambalpuri Ikat & Crescent Hobo Studio in React",
+  "scripts": {
+    "dev": "cd react-app && npm run dev",
+    "build": "cd react-app && npm run build && cp dist/index.html ../index.html && cp -r dist/assets ../",
+    "preview": "cd react-app && npm run preview"
+  }
+}

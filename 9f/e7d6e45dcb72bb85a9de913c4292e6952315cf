@@ -1,0 +1,20 @@
+index.html
+  h_295dae1479a15c 59-60,63,66,69-72,440-582,687,693,698,703,714,716,719-722,727-735,1046-1323,1329
+workflows/01_google_sheets_setup/README.md
+  h_295dae1479a15c 7-8,10-22,24,28-37,41
+workflows/01_google_sheets_setup/categories_schema.csv
+  h_295dae1479a15c 1-6
+workflows/02_google_forms_admin/admin_product_manager.html
+  h_295dae1479a15c 78-80,183-184,188-191,196-199,204-216,218-219,247-402,504-888,891-900,910-915,919,922,933,936,952,977,980,985-986,988,994,1002,1004,1018-1019
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9fe7d6e45dcb72bb85a9de913c4292e6952315cf",
+  "prompts": {},
+  "humans": {
+    "h_295dae1479a15c": {
+      "author": "nsarangi1 <nsarangi@cisco.com>"
+    }
+  }
+}

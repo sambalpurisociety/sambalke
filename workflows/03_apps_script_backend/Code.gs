@@ -267,7 +267,8 @@ function getFullSettings() {
   const sheet = ss.getSheetByName(SHEET_SETTINGS);
   const settings = {
     BRAND_NAME: "SambalKe Handlooms",
-    NOTIFICATION_EMAIL_LIST: Session.getActiveUser().getEmail() || "orders@sambalke.com",
+    NOTIFICATION_EMAIL_LIST: "sambalpurisociety@gmail.com",
+    CUSTOMER_SUPPORT_EMAIL: "sambalpurisociety@gmail.com",
     WHATSAPP_SUPPORT_NUMBER: "919876543210",
     CURRENCY_SYMBOL: "₹",
     CURRENCY_CODE: "INR"
@@ -294,6 +295,7 @@ function getPublicSettings() {
   const full = getFullSettings();
   return {
     brandName: full.BRAND_NAME || "SambalKe Handlooms",
+    supportEmail: full.CUSTOMER_SUPPORT_EMAIL || "sambalpurisociety@gmail.com",
     whatsappNumber: full.WHATSAPP_SUPPORT_NUMBER || "919876543210",
     currencySymbol: full.CURRENCY_SYMBOL || "₹",
     currencyCode: full.CURRENCY_CODE || "INR",
@@ -311,8 +313,7 @@ function getNotificationEmailList(settings) {
     .filter(e => e.length > 0 && e.indexOf("@") !== -1);
 
   if (emails.length === 0) {
-    const ownerEmail = Session.getActiveUser().getEmail();
-    return ownerEmail ? [ownerEmail] : ["admin@sambalke.com"];
+    return ["sambalpurisociety@gmail.com"];
   }
 
   return emails;
@@ -504,8 +505,8 @@ function initDatabase() {
   if (!setSheet) setSheet = ss.insertSheet(SHEET_SETTINGS);
   if (setSheet.getLastRow() === 0) {
     setSheet.appendRow(["Setting_Key", "Setting_Value", "Description"]);
-    const userEmail = Session.getActiveUser().getEmail() || "owner@sambalke.com";
-    setSheet.appendRow(["NOTIFICATION_EMAIL_LIST", userEmail, "Comma-separated emails to receive instant inquiry alerts"]);
+    setSheet.appendRow(["NOTIFICATION_EMAIL_LIST", "sambalpurisociety@gmail.com", "Comma-separated emails to receive instant inquiry alerts"]);
+    setSheet.appendRow(["CUSTOMER_SUPPORT_EMAIL", "sambalpurisociety@gmail.com", "Official customer support email"]);
     setSheet.appendRow(["BRAND_NAME", "SambalKe Handlooms", "Store name"]);
     setSheet.appendRow(["WHATSAPP_SUPPORT_NUMBER", "919876543210", "WhatsApp contact number without +"]);
     setSheet.appendRow(["CURRENCY_SYMBOL", "₹", "Currency symbol"]);

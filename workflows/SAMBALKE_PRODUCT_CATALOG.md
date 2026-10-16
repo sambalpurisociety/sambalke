@@ -4,7 +4,8 @@
 > **Tagline**: *"Handwoven stories for everyday journey"* • *"Traditional in Motion"*  
 > **Hero Segment**: **The Crescent Hobo Collection (Heritage Segment 2.0)**  
 > **Currency**: Indian Rupees (₹)  
-> **Payment Mode**: Contact Seller / WhatsApp / Offline UPI & COD (No Online Payment Gateway)
+> **Payment Mode**: Contact Seller / WhatsApp / Offline UPI & COD (No Online Payment Gateway)  
+> **Customer Support Email**: [sambalpurisociety@gmail.com](mailto:sambalpurisociety@gmail.com)
 
 ---
 

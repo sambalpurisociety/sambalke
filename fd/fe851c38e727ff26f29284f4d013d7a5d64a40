@@ -1,0 +1,20 @@
+assets/index-DzTWQXxg.js
+  h_295dae1479a15c 9,4229
+index.html
+  h_295dae1479a15c 12
+react-app/src/components/Gallery.jsx
+  h_295dae1479a15c 164,167,175
+react-app/src/components/ProductModal.jsx
+  h_295dae1479a15c 473-474,493,495-496,501-502,509,528
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fdfe851c38e727ff26f29284f4d013d7a5d64a40",
+  "prompts": {},
+  "humans": {
+    "h_295dae1479a15c": {
+      "author": "nsarangi1 <nsarangi@cisco.com>"
+    }
+  }
+}
